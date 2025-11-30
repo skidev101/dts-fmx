@@ -7,6 +7,8 @@ export interface Note {
   title: string;
   description?: string | null;
   fileUrl: string;
+  fileName?: string | null;
+  fileType?: string | null;
   uploadedById: string;
   courseId: string;
   downloads: number;

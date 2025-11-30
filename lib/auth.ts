@@ -2,6 +2,8 @@
 // import { prisma } from "@/lib/prisma";
 // import usernameFromEmail from "@/utils/formatName";
 
+import { NextResponse } from "next/server";
+
 // export async function getCurrentUser() {
 //   const clerkUser = await currentUser();
 //   console.log("clerk user:", clerkUser)
@@ -39,4 +41,23 @@
 //   console.log("new user created:", user)
   
 //   return user;
+// }
+
+
+// export async function requireUser() {
+//     const user = await getCurrentUser();
+//     if (!user) {
+//         throw NextResponse.json({ error: "unauthorized"}, {status: 401});
+//     }
+
+//     return user;
+// }
+
+// export async function requireAdmin() {
+//     const user = await getCurrentUser();
+//     if (user?.role !== "ADMIN") {
+//         throw NextResponse.json({ error: "forbidden"}, {status: 403});
+//     }
+
+//     return user;
 // }

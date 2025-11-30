@@ -1,0 +1,78 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { UTApi } from "uploadthing/server";
+
+
+const utapi = new UTApi();
+
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const courseId = (await params).id;
+  if (!courseId) {
+    return NextResponse.json(
+      { message: "courseId is required" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // const session = await auth();
+    // if (!session.userId) {
+    //   return NextResponse.json({ error: "unauthorized" }, { status: 403 });
+    // }
+    // const userId = session.userId;
+
+    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
+
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+    if (!foundUser || foundUser.role !== "ADMIN") {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
+
+    const notes = await prisma.note.findMany({
+      where: {
+        courseId,
+      },
+      select: {
+        id: true,
+        fileKey: true,
+      },
+    });
+
+    const fileKeys = notes.map((n) => n.fileKey).filter(Boolean) as string[];
+
+    await prisma.note.deleteMany({
+      where: {
+        courseId,
+      },
+    });
+
+    await prisma.course.delete({
+      where: {
+        id: courseId,
+      },
+    });
+
+    if (fileKeys.length > 0) {
+      await utapi.deleteFiles(fileKeys);
+    }
+
+    return NextResponse.json(
+      { success: true, message: "Course deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("error deleting course:", error);
+    return NextResponse.json(
+      { error: "Internal server error " },
+      { status: 500 }
+    );
+  }
+}

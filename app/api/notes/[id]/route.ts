@@ -25,43 +25,43 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const noteId = params.id;
+// export async function DELETE(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const noteId = params.id;
 
-  if (!noteId) {
-    return NextResponse.json(
-      { error: "courseId is required" },
-      { status: 400 }
-    );
-  }
+//   if (!noteId) {
+//     return NextResponse.json(
+//       { error: "courseId is required" },
+//       { status: 400 }
+//     );
+//   }
 
-  try {
-    const session = await auth();
-    if (!session?.userId) {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+//   try {
+//     const session = await auth();
+//     if (!session?.userId) {
+//       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+//     }
 
-    const userId = session.userId;
-    const foundUser = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
-    });
-    if (!foundUser || foundUser.role !== "ADMIN") {
-      return NextResponse.json({ error: "forbidden" }, { status: 403 });
-    }
+//     const userId = session.userId;
+//     const foundUser = await prisma.user.findUnique({
+//       where: {
+//         clerkId: userId,
+//       },
+//     });
+//     if (!foundUser || foundUser.role !== "ADMIN") {
+//       return NextResponse.json({ error: "forbidden" }, { status: 403 });
+//     }
 
-    await prisma.note.delete({
-      where: {
-        id: noteId,
-      },
-    });
+//     await prisma.note.delete({
+//       where: {
+//         id: noteId,
+//       },
+//     });
 
-    return NextResponse.json({}, { status: 200 });
-  } catch (err) {
-    console.error("error deleting note:", err);
-  }
-}
+//     return NextResponse.json({}, { status: 200 });
+//   } catch (err) {
+//     console.error("error deleting note:", err);
+//   }
+// }

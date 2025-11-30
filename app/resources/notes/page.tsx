@@ -18,13 +18,13 @@ const page = () => {
       <h1 className="text-3xl font-semibold">All notes</h1>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
-        {notes.map((note: Note) => (
+        {/* {notes.map((note: Note) => (
           <ResourceCard
             key={note.id}
             title={note.title}
             level={note.level}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

@@ -90,7 +90,7 @@ const CoursePage = () => {
       />
 
       {course?.notes?.length === 0 ? (
-        <div className="text-center">
+        <div className="text-center mt-8">
           <p>No notes for this course yet...</p>
         </div>
       ) : (

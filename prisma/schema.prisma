@@ -4,23 +4,23 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id  String  @id @default(cuid())
-  clerkId   String  @unique
-  fullname  String? @default("")
-  email   String 
-  username String @unique
-  role  Role  @default(STUDENT)
-  avatarUrl   String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  fullname  String?  @default("")
+  email     String
+  username  String   @unique
+  role      Role     @default(STUDENT)
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   notesDownloaded NoteDownloadLog[] @relation("UserDownloads")
-  uploadedNotes Note[] @relation("UserUploadedNotes")
-  coursesCreated Course[] @relation("UserCreatedCourses")
+  uploadedNotes   Note[]            @relation("UserUploadedNotes")
+  coursesCreated  Course[]          @relation("UserCreatedCourses")
 }
 
 enum Role {
@@ -29,14 +29,14 @@ enum Role {
 }
 
 model Course {
-  id  String @id @default(cuid())
-  title   String 
-  code String @unique
-  level Level
+  id          String   @id @default(cuid())
+  title       String
+  code        String   @unique
+  level       Level
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  createdBy User? @relation("UserCreatedCourses",fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User?    @relation("UserCreatedCourses", fields: [createdById], references: [id], onDelete: SetNull)
   createdById String?
 
   notes Note[] @relation("NoteCourse")
@@ -50,30 +50,30 @@ enum Level {
   L500
 }
 
-
 model Note {
-  id String @id @default(cuid())
-  title String
-  description String?
-  fileUrl String
-  fileKey String
-  uploadedBy User?   @relation("UserUploadedNotes", fields: [uploadedById], references: [id], onDelete: SetNull)
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  fileUrl      String
+  fileKey      String
+  fileName     String?
+  fileType     String?
+  uploadedBy   User?    @relation("UserUploadedNotes", fields: [uploadedById], references: [id], onDelete: SetNull)
   uploadedById String?
-  course Course @relation("NoteCourse", fields: [courseId], references:[id], onDelete: Cascade)
-  courseId String
-  downloads Int @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  course       Course   @relation("NoteCourse", fields: [courseId], references: [id], onDelete: Cascade)
+  courseId     String
+  downloads    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   downloadsLog NoteDownloadLog[] @relation("NoteDownloads")
 }
 
-
 model NoteDownloadLog {
-  id String @id @default(cuid())
-  note Note @relation("NoteDownloads", fields: [noteId], references: [id], onDelete: Cascade)
-  noteId String
-  user User @relation("UserDownloads", fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  id        String   @id @default(cuid())
+  note      Note     @relation("NoteDownloads", fields: [noteId], references: [id], onDelete: Cascade)
+  noteId    String
+  user      User     @relation("UserDownloads", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   createdAt DateTime @default(now())
 }

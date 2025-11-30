@@ -5,6 +5,8 @@ interface createNoteProps {
   description: string;
   fileUrl: string;
   fileKey: string;
+  fileName: string;
+  fileType: string;
   courseId: string;
 }
 
@@ -14,14 +16,14 @@ export const useCreateNote = () => {
   return useMutation({
     mutationFn: async (data: createNoteProps) => {
       try {
-        const res = await fetch("/api/notes", {
+        const res = await fetch("/api/admin/notes", {
           method: "POST",
           body: JSON.stringify(data),
         });
 
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}));
-          console.error("api error:", errorData);
+          console.error("create note error:", errorData);
           throw new Error(errorData.error || "Failed to create note");
         }
         return res.json();

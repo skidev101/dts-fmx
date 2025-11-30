@@ -55,6 +55,8 @@ const UploadNoteForm = () => {
   const router = useRouter();
   const [fileUrl, setFileUrl] = useState<string>("");
   const [fileKey, setFileKey] = useState<string>("");
+  const [fileName, setFileName] = useState<string>("");
+  const [fileType, setFileType] = useState<string>("");
   const [fileError, setFileError] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
@@ -98,6 +100,8 @@ const UploadNoteForm = () => {
         courseId: selectedCourseId,
         fileUrl,
         fileKey,
+        fileName,
+        fileType
       },
       {
         //  onMutate: () => {
@@ -264,6 +268,8 @@ const UploadNoteForm = () => {
                 if (res?.length) {
                   setFileUrl(res[0].serverData.url);
                   setFileKey(res[0].serverData.fileKey);
+                  setFileName(res[0].serverData.fileName);
+                  setFileType(res[0].serverData.fileType);
                 }
                 toast.success("File uploaded", {
                   id: uploadToastId,
@@ -272,7 +278,7 @@ const UploadNoteForm = () => {
               }}
               onUploadProgress={(p) => {
                 console.log("upload progress:", p);
-                toast.loading("Uploading file", { id: uploadToastId });
+                toast.loading("Uploading file", { id: uploadToastId, description: "This may take a few seconds" });
               }}
               onUploadError={(err: Error) => {
                 console.error("error uploading file:",err);
@@ -288,7 +294,7 @@ const UploadNoteForm = () => {
                 )}
             </div>
 
-            {fileUrl && <p className="text-sm mt-1">Uploaded: {fileUrl}</p>}
+            {fileUrl && <p className="text-sm mt-1 truncate">Uploaded: {fileUrl}</p>}
           </Field>
         </form>
         <DialogFooter>

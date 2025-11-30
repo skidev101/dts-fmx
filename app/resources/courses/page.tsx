@@ -16,9 +16,9 @@ const page = () => {
   console.log("courses fetched:", courses);
 
   const filteredCourses = useMemo(() => {
-    if (!courses) return [];
+    // if (!courses) return [];
 
-    return courses.filter((course: Course) => {
+    return courses?.filter((course: Course) => {
       const term = search.toLowerCase();
       return (
         course.title.toLowerCase().includes(term) || 

@@ -28,7 +28,7 @@ interface NavbarUserMenuProps {
 
 export default function NavbarUserMenu({ user }: NavbarUserMenuProps) {
   const { isMobile } = useSidebar();
-  const { signOut } = useClerk();
+  // const { signOut } = useClerk();
 
   return (
     <DropdownMenu>
@@ -99,7 +99,7 @@ export default function NavbarUserMenu({ user }: NavbarUserMenuProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-      onSelect={() => signOut({ redirectUrl: "/" })}
+      // onSelect={() => signOut({ redirectUrl: "/" })}
       className="flex items-center gap-2"
     >
       <LogOut />

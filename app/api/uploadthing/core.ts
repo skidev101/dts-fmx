@@ -20,15 +20,19 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
+      // console.log("Upload complete for userId:", metadata.userId);
+      console.log("metadata from file upload:", metadata);
+      console.log("file from upload:", file);
 
-      console.log("file url", file.ufsUrl);
+      // console.log("file url", file.ufsUrl);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return {
         url: file.ufsUrl,
         uploadedBy: metadata.userId,
         fileKey: file.key,
+        fileName: file.name,
+        fileType: file.type,
       };
     }),
 } satisfies FileRouter;

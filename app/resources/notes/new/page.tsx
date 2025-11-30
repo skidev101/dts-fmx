@@ -1,4 +1,4 @@
-import UploadNoteForm from "@/components/dashboard/UploadNoteForm"
+import UploadNoteForm from "@/app/dashboard/components/Admin/UploadNoteForm"
 
 const page = () => {
   return (

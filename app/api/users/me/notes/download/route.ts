@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
 
     const url = new URL(req.url);
-    const cursor = url.searchParams.get("cursor") ?? undefined;
+    const cursor = (url.searchParams.get("cursor") ?? undefined) ?? undefined;
     const limit = Math.min(Number(url.searchParams.get("limit") ?? 10), 50);
 
     const where = { userId };
@@ -64,6 +64,19 @@ export async function POST(req: Request) {
     // const userId = session.userId;
     const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
 
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+      select: { id: true },
+    });
+    if (!foundUser) {
+      return NextResponse.json(
+        { error: "user does not exist" },
+        { status: 404 }
+      );
+    };
+
     const { noteId } = await req.json();
     const noteExists = await prisma.note.findUnique({
       where: { id: noteId },
@@ -78,7 +91,7 @@ export async function POST(req: Request) {
 
     const result = await prisma.$transaction(async (tx) => {
       const log = await prisma.noteDownloadLog.create({
-        data: { noteId, userId },
+        data: { noteId, userId: foundUser.id },
       });
 
       await tx.note.update({

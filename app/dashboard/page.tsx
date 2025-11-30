@@ -1,9 +1,10 @@
-import AdminDashboard from './components/Admin/AdminDashboard'
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import StudentDashboard from "./components/Student/StudentDashboard";
 
 const page = () => {
-  return (
-    <AdminDashboard />
-  )
-}
+  const role: string = "STUDENT";
 
-export default page
+  return <>{role === "ADMIN" ? <AdminDashboard /> : <StudentDashboard />}</>;
+};
+
+export default page;

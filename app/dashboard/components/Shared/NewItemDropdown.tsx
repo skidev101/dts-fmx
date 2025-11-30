@@ -26,7 +26,7 @@ const NewItemDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-30 rounded-xl " align="center">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/notes/new")}>
+          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/resources/notes/new")}>
             Note
           </DropdownMenuItem>
           <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/new")}>
