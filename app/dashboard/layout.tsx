@@ -3,7 +3,7 @@ import { DashboardSidebar } from "@/app/dashboard/components/Shared/DashboardSid
 // import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Role } from "@/lib/types/user";
+import { Role } from "@/types/user";
 import Navbar from "./components/Shared/Navbar";
 
 export const user = {
@@ -35,7 +35,6 @@ export default function DashboardLayout({
             <main className="p-3 sm:p-6 flex-1 overflow-auto">{children}</main>
           </div>
         </SidebarInset>
-
       </SidebarProvider>
     </div>
   );

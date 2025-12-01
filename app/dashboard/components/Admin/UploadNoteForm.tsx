@@ -13,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -26,7 +30,7 @@ import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { useCreateNote } from "@/hooks/notes/useCreateNote";
 import { useCourses } from "@/hooks/course/useCourses";
-import { Course } from "@/lib/types/course";
+import { Course } from "@/types/course";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -63,7 +67,7 @@ const UploadNoteForm = () => {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [courseFieldError, setCourseFieldError] = useState("");
   const {
-    data:courses,
+    data: courses,
     isLoading: coursesLoading,
     isError: coursesError,
     error: coursesErrorDetails,
@@ -83,7 +87,7 @@ const UploadNoteForm = () => {
 
   const handleSubmit = (data: NoteFormSchema) => {
     if (!fileUrl) {
-      setFileError("Please upload a file first")
+      setFileError("Please upload a file first");
       return;
     }
     if (!selectedCourse || selectedCourse == "") {
@@ -101,7 +105,7 @@ const UploadNoteForm = () => {
         fileUrl,
         fileKey,
         fileName,
-        fileType
+        fileType,
       },
       {
         //  onMutate: () => {
@@ -146,32 +150,31 @@ const UploadNoteForm = () => {
         <DialogHeader>
           <DialogTitle>New note</DialogTitle>
           <DialogDescription>
-            Fill in the form below to create a new note under a course. Click submit when
-            done.
+            Fill in the form below to create a new note under a course. Click
+            submit when done.
           </DialogDescription>
         </DialogHeader>{" "}
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FieldGroup>
             {/* <div className="flex items-center gap-2"> */}
-              {/* Title */}
-              <Controller
-                name="title"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Title *</FieldLabel>
-                    <Input {...field} placeholder="Intro to Data science" />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
+            {/* Title */}
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Title *</FieldLabel>
+                  <Input {...field} placeholder="Intro to Data science" />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-              <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-                <div className="flex flex-col gap-3">
-
-                  <FieldLabel>Course *</FieldLabel>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <div className="flex flex-col gap-3">
+                <FieldLabel>Course *</FieldLabel>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -193,46 +196,43 @@ const UploadNoteForm = () => {
                 {courseFieldError && (
                   <p className="text-red-500">{courseFieldError}</p>
                 )}
-                </div>
+              </div>
 
-                <PopoverContent className="w-[300px] p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search courses"
-                      className="h-9"
-                    />
-                    <CommandList>
-                      <CommandEmpty>No course found.</CommandEmpty>
-                      <CommandGroup>
-                        {courseList?.map((course: Course) => (
-                          <CommandItem
-                            key={course.id}
-                            value={course.code}
-                            onSelect={(value: string) => {
-                              setSelectedCourse(
-                                value === selectedCourse ? "" : value
-                              );
-                              setSelectedCourseId(course.id);
-                              setPopoverOpen(false);
-                            }}
-                          >
-                            {course.code}
+              <PopoverContent className="w-[300px] p-0">
+                <Command>
+                  <CommandInput placeholder="Search courses" className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No course found.</CommandEmpty>
+                    <CommandGroup>
+                      {courseList?.map((course: Course) => (
+                        <CommandItem
+                          key={course.id}
+                          value={course.code}
+                          onSelect={(value: string) => {
+                            setSelectedCourse(
+                              value === selectedCourse ? "" : value
+                            );
+                            setSelectedCourseId(course.id);
+                            setPopoverOpen(false);
+                          }}
+                        >
+                          {course.code}
 
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                selectedCourse === course.code
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+                          <Check
+                            className={cn(
+                              "ml-auto",
+                              selectedCourse === course.code
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
             {/* </div> */}
           </FieldGroup>
 
@@ -257,44 +257,50 @@ const UploadNoteForm = () => {
           />
 
           {/* File Upload */}
-          <Field >
+          <Field>
             <FieldLabel>Upload File *</FieldLabel>
-            <div className={`flex justify-center items-center py-4 border border-dashed ${fileError ? "border-red-500" :"border-gray-500" } rounded-xl`}>
-
-            <UploadButton<OurFileRouter, "noteUploader">
-              endpoint="noteUploader"
-              onClientUploadComplete={(res: any) => {
-                console.log("respond from file upload:", res);
-                if (res?.length) {
-                  setFileUrl(res[0].serverData.url);
-                  setFileKey(res[0].serverData.fileKey);
-                  setFileName(res[0].serverData.fileName);
-                  setFileType(res[0].serverData.fileType);
-                }
-                toast.success("File uploaded", {
-                  id: uploadToastId,
-                  description: "You may submit now!",
-                });
-              }}
-              onUploadProgress={(p) => {
-                console.log("upload progress:", p);
-                toast.loading("Uploading file", { id: uploadToastId, description: "This may take a few seconds" });
-              }}
-              onUploadError={(err: Error) => {
-                console.error("error uploading file:",err);
-                toast.success("File upload error", {
-                  id: uploadToastId,
-                  description: err.message || "Please try again",
-                });
-              }}
-              // className="mt-2"
-            />
-            {fileError && (
-                  <p className="text-red-500">{fileError}</p>
-                )}
+            <div
+              className={`flex justify-center items-center py-4 border border-dashed ${
+                fileError ? "border-red-500" : "border-gray-500"
+              } rounded-xl`}
+            >
+              <UploadButton<OurFileRouter, "noteUploader">
+                endpoint="noteUploader"
+                onClientUploadComplete={(res: any) => {
+                  console.log("respond from file upload:", res);
+                  if (res?.length) {
+                    setFileUrl(res[0].serverData.url);
+                    setFileKey(res[0].serverData.fileKey);
+                    setFileName(res[0].serverData.fileName);
+                    setFileType(res[0].serverData.fileType);
+                  }
+                  toast.success("File uploaded", {
+                    id: uploadToastId,
+                    description: "You may submit now!",
+                  });
+                }}
+                onUploadProgress={(p) => {
+                  console.log("upload progress:", p);
+                  toast.loading("Uploading file", {
+                    id: uploadToastId,
+                    description: "This may take a few seconds",
+                  });
+                }}
+                onUploadError={(err: Error) => {
+                  console.error("error uploading file:", err);
+                  toast.success("File upload error", {
+                    id: uploadToastId,
+                    description: err.message || "Please try again",
+                  });
+                }}
+                // className="mt-2"
+              />
+              {fileError && <p className="text-red-500">{fileError}</p>}
             </div>
 
-            {fileUrl && <p className="text-sm mt-1 truncate">Uploaded: {fileUrl}</p>}
+            {fileUrl && (
+              <p className="text-sm mt-1 truncate">Uploaded: {fileUrl}</p>
+            )}
           </Field>
         </form>
         <DialogFooter>

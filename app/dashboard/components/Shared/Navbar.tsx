@@ -9,18 +9,19 @@ import {
 import Searchbar from "./Searchbar";
 import { Separator } from "@/components/ui/separator";
 import NavbarUserMenu from "./NavbarMenu";
-import { User } from "@/lib/types/user";
+import { User } from "@/types/user";
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import NewItemDropdown from "./NewItemDropdown";
 
 const Navbar = ({ user }: { user: User }) => {
   const sidebar = useSidebar();
+  const role: string = "STUDENT";
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all backdrop-blur-2xl border-b ${
-        sidebar.open ? "md:left-(--sidebar-width)" : "md:left-12"
+        sidebar.open ? "md:left-(--sidebar-width)" : "md:left-13"
       }`}
     >
       {/* <div className={`w-full h-full backdrop-blur-2xl ${sidebar.open ? "md:w-(--sidebar-width)" : "md:w-[41px]"}`}>
@@ -43,6 +44,8 @@ const Navbar = ({ user }: { user: User }) => {
             />
             <div className="flex items-center gap-2">
               <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+              {role === "ADMIN" && (
+
               <Badge
                 variant="secondary"
                 className="bg-blue-500 text-white dark:bg-blue-600"
@@ -50,14 +53,15 @@ const Navbar = ({ user }: { user: User }) => {
                 <ShieldCheck />
                 Admin
               </Badge>
+              )}
             </div>
             {/* </div> */}
           </div>
 
           <div className="flex flex-1 items-center justify-end gap-4 min-w-0">
-            <Searchbar onChange={() => console.log("inputting...")} />
+            {/* <Searchbar onChange={() => console.log("inputting...")} /> */}
 
-            <NewItemDropdown />
+            {role === "ADMIN" && <NewItemDropdown />}
 
             <NavbarUserMenu user={user} />
           </div>

@@ -1,13 +1,22 @@
-import RecentDownloads from "./RecentDownloads"
+import LatestNotes from "./LatestNotes";
+import RecentDownloads from "./RecentDownloads";
+import RecommendedNotes from "./RecommendedNotes";
 
 const StudentDashboard = () => {
   return (
-    <div className="flex items-center">
-      <div className="flex flex-col gap-2">
-        <RecentDownloads />
-      </div>
-    </div>
-  )
-}
+    <section className="sm:p-4 overflow-auto mt-10 sm:mt-2">
+      <div className="flex flex-col sm:flex-row gap-6">
+        <div className="flex flex-col w-full gap-12">
+          <RecentDownloads />
+          <LatestNotes />
+        </div>
 
-export default StudentDashboard
+        <div className="flex flex-col w-full md:min-w-[320px] gap-4 flex-1">
+          <RecommendedNotes />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default StudentDashboard;

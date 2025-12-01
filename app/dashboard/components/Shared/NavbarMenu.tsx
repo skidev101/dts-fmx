@@ -13,18 +13,13 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import {
-  BadgeCheck,
-  Bell,
-  CreditCard,
-  LogOut,
-} from "lucide-react";
-import { User } from "@/lib/types/user";
+import { BadgeCheck, Bell, CreditCard, LogOut } from "lucide-react";
+import { User } from "@/types/user";
 import { useClerk } from "@clerk/nextjs";
 
 interface NavbarUserMenuProps {
   user: User;
-};
+}
 
 export default function NavbarUserMenu({ user }: NavbarUserMenuProps) {
   const { isMobile } = useSidebar();
@@ -99,12 +94,12 @@ export default function NavbarUserMenu({ user }: NavbarUserMenuProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-      // onSelect={() => signOut({ redirectUrl: "/" })}
-      className="flex items-center gap-2"
-    >
-      <LogOut />
-      Log out
-    </DropdownMenuItem>
+          // onSelect={() => signOut({ redirectUrl: "/" })}
+          className="flex items-center gap-2"
+        >
+          <LogOut />
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
