@@ -1,6 +1,6 @@
 "use client";
 
-import { Note } from "@/lib/types/note";
+import { Note } from "@/types/note";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export interface DownloadLogItem {
@@ -23,7 +23,7 @@ export const useRecentDownloads = () => {
     queryFn: async ({ pageParam }) => {
       const cursor = pageParam as string;
 
-      const params = new URLSearchParams(); 
+      const params = new URLSearchParams();
       params.set("limit", "10");
 
       if (pageParam) params.set("cursor", cursor);
@@ -32,6 +32,6 @@ export const useRecentDownloads = () => {
       return res.json();
     },
 
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined
-  })
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+  });
 };

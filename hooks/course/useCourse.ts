@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Course } from "@/lib/types/course";
+import { Course } from "@/types/course";
 import { useQuery } from "@tanstack/react-query";
 
 export const useCourse = (id?: string) => {
-  console.log("now in get courses hook")
+  console.log("now in get courses hook");
   return useQuery<Course>({
     queryKey: ["course", id],
     queryFn: async () => {

@@ -9,8 +9,9 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Copy, DownloadCloud } from "lucide-react";
-import { Note } from "@/lib/types/note";
+import { Note } from "@/types/note";
 import formatDate from "@/utils/formatDate";
+import { copy } from "@/utils/clipboard";
 
 interface NoteDialogProps {
   note: Note | null;
@@ -19,25 +20,27 @@ interface NoteDialogProps {
 }
 
 export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
-  if (!note) return null;
-  console.log("note recieved as props:", note)
+  if (!note) return;
+  console.log("note recieved as props:", note);
 
   const handleFileDownload = async () => {
-    console.log("now in note download with filename:", note.fileName)
+    console.log("now in note download with filename:", note.fileName);
     if (!note.fileName || !note.fileUrl) return;
-    console.log("now in note download test2 with filename:", note.fileName)
+    console.log("now in note download test2 with filename:", note.fileName);
     console.log("file url:", note.fileUrl);
     console.log("file name:", note.fileName);
 
     await fetch("/api/users/me/notes/download", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ noteId: note.id }),
     });
 
-    const cleanFileName = note.fileName.replace(/\s+/g, "_").replace(/[^\w.\-]/g, "");
+    const cleanFileName = note.fileName
+      .replace(/\s+/g, "_")
+      .replace(/[^\w.\-]/g, "");
     const extension = note.fileName.split(".").pop() || "txt";
 
     const link = document.createElement("a");
@@ -51,9 +54,10 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
       console.warn("direct download failed, opening in new tab:", err);
       window.open(note.fileUrl, "_blank");
     }
-    
+
     document.body.removeChild(link);
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -63,10 +67,10 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
         </DialogHeader>
         <div className="flex flex-col sm:flex-row gap-2 mt-2">
           <div className="flex justify-center items-center w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-accent rounded-md sm:rounded-2xl">
-            PDF
+            {note.fileName?.split(".").pop()?.toUpperCase() || "PDF"}
           </div>
 
-          <div className="flex flex-col gap-3 sm:ml-2">
+          <div className="flex flex-col gap-3 mt-2 sm:ml-2">
             <h1 className="text-lg sm:text-2xl capitalize font-black text-card-foreground">
               {note.title} - introduction to data analytics
             </h1>
@@ -85,7 +89,7 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
         <span className="text-xs text-card-foreground/60">size: 12kb</span>
 
         <DialogFooter>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => copy("hello world")}>
             Copy link <Copy className="size-4" />
           </Button>
 

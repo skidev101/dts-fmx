@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Note } from "@/lib/types/note";
+import { Note } from "@/types/note";
 import { useQuery } from "@tanstack/react-query";
 
 export const useNote = (id?: string) => {
-  console.log("now in get note hook")
+  console.log("now in get note hook");
   return useQuery<Note>({
     queryKey: ["note", id],
     queryFn: async () => {

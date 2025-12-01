@@ -5,7 +5,7 @@ import Searchbar from "@/app/dashboard/components/Shared/Searchbar";
 import ResourceCard from "@/components/ResourceCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCourses } from "@/hooks/course/useCourses";
-import { Course } from "@/lib/types/course";
+import { Course } from "@/types/course";
 import { useSearchParams } from "next/navigation";
 
 const page = () => {
@@ -21,12 +21,12 @@ const page = () => {
     return courses?.filter((course: Course) => {
       const term = search.toLowerCase();
       return (
-        course.title.toLowerCase().includes(term) || 
+        course.title.toLowerCase().includes(term) ||
         course.code.toLowerCase().includes(term) ||
         course.level.toLowerCase().includes(term)
-      )
-    })
-  }, [search, courses])
+      );
+    });
+  }, [search, courses]);
 
   if (isLoading) {
     return (
@@ -48,23 +48,22 @@ const page = () => {
     );
   }
 
-  if(!filteredCourses) {
+  if (!filteredCourses) {
     return (
       <div className="w-full flex justify-center items-center">
         <h1>No results for search</h1>
       </div>
-    )
+    );
   }
 
   return (
     <div className="flex flex-col m-auto max-w-5xl mt-10 px-2">
       <h1 className="text-3xl font-semibold ml-1">All courses</h1>
-    
-    <div className="mt-8">
 
-      <Searchbar onChange={setSearch} />
-    </div>
-    
+      <div className="mt-8">
+        <Searchbar onChange={setSearch} />
+      </div>
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 mt-6">
         {filteredCourses?.map((course: Course) => (
           <ResourceCard

@@ -5,7 +5,7 @@ export const useAnalytics = () => {
     queryKey: ["analytics"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/analytics");
+        const res = await fetch("/api/admin/analytics");
         const data = await res.json();
         return data;
       } catch (error) {
