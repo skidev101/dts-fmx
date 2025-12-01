@@ -10,12 +10,20 @@ export async function GET(req: Request) {
 
     // const userId = session.userId;
     const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId
+      }
+    });
+    if (!foundUser) {
+      return NextResponse.json({ error: "user not found" }, { status: 404 });
+    }
 
     const url = new URL(req.url);
     const cursor = (url.searchParams.get("cursor") ?? undefined) ?? undefined;
     const limit = Math.min(Number(url.searchParams.get("limit") ?? 10), 50);
 
-    const where = { userId };
+    const where = { userId: foundUser.id };
     const logs = await prisma.noteDownloadLog.findMany({
       where,
       take: limit + 1,
@@ -29,10 +37,13 @@ export async function GET(req: Request) {
             fileUrl: true,
             fileKey: false,
             course: { select: { code: true, title: true } },
+            createdAt: true
           },
         },
       },
     });
+
+    console.log("logs queried:", logs);
 
     const hasMore = logs.length > limit;
     const items = hasMore ? logs.slice(0, -1) : logs;
@@ -43,6 +54,7 @@ export async function GET(req: Request) {
       createdAt: l.createdAt,
       note: l.note,
     }));
+    console.log("payload created:", payload)
 
     return NextResponse.json({ items: payload, nextCursor }, { status: 200 });
   } catch (err) {

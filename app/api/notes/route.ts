@@ -29,7 +29,7 @@ import { prisma } from "@/lib/prisma";
 //     if (!foundUser || foundUser.role !== "ADMIN") {
 //       return NextResponse.json({ error: "forbidden" }, { status: 403 });
 //     }
-    
+
 //     const body = await req.json();
 //     const data = NoteUploadSchema.parse(body);
 
@@ -57,14 +57,26 @@ import { prisma } from "@/lib/prisma";
 //   }
 // }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const url = new URL(req.url);
+    const cursor = (url.searchParams.get("cursor") ?? undefined) ?? undefined;
+    const limit = Math.min(Number(url.searchParams.get("limit") ?? 10), 50);
+
     const notes = await prisma.note.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
-    return NextResponse.json( notes , { status: 200 });
+
+    console.log("notes queried:", notes);
+    const hasMore = notes.length > limit;
+    const items = hasMore ? notes.slice(0, -1) : notes;
+    const nextCursor = hasMore ? items[items.length - 1].id : null;
+
+    console.log("sending notes", items)
+    
+    return NextResponse.json({notes: items, nextCursor}, { status: 200 });
   } catch (err) {
     console.error("error getting notes", err);
     return NextResponse.json(
