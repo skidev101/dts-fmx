@@ -32,7 +32,11 @@ const NoteCard = ({ note, downloadDate }: NoteCardProps) => {
         <CardContent className="flex flex-col px-0">
           <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-neutral-800 border">
             {/* <Image width={28} height={28} src="/file.svg" alt="file" /> */}
-            <ChartBarStacked className="size-8 text-neutral-400" />
+            {note.fileName ? (
+              note.fileName.split(".").pop()?.toUpperCase() || "PDF"
+            ) : (
+              <ChartBarStacked className="size-8 text-neutral-400" />
+            )}
           </div>
           <div className="flex justify-center flex-col mt-4 ml-1">
             <h3 className="font-semibold text-foreground/90 capitalize text-lg">

@@ -6,6 +6,7 @@ interface createNoteProps {
   fileUrl: string;
   fileKey: string;
   fileName: string;
+  fileSize: string;
   fileType: string;
   courseId: string;
 }

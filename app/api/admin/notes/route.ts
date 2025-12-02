@@ -10,6 +10,7 @@ const NoteUploadSchema = z.object({
   fileKey: z.string().min(3),
   fileName: z.string().min(1),
   fileType: z.string().min(1),
+  fileSize: z.coerce.number().min(1),
   courseId: z.string().min(3),
 });
 
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
         fileKey: data.fileKey,
         fileName: data.fileName,
         fileType: data.fileType,
+        fileSize: data.fileSize,
         uploadedById: foundUser.id,
         courseId: data.courseId,
       },

@@ -1,7 +1,7 @@
 export async function uploadToCloudinary(file: File) {
   // Get signature from backend
   const { signature, timestamp, cloudName, apiKey } = await fetch(
-    "/api/cloudinary-signature",
+    "/api/cloudinary/signature",
     {
       method: "POST",
     }
@@ -13,7 +13,7 @@ export async function uploadToCloudinary(file: File) {
   formData.append("signature", signature);
   formData.append("timestamp", timestamp);
   formData.append("api_key", apiKey);
-  formData.append("folder", "notes");
+  formData.append("folder", "dts-fmx/notes");
 
   // Upload to Cloudinary
   const response = await fetch(

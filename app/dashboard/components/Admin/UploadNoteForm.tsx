@@ -44,6 +44,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { uploadToCloudinary } from "@/lib/uploadFile";
+import { Label } from "@/components/ui/label";
+import { ALLOWED_TYPES, validateFile } from "@/utils/fileValidator";
 
 const noteSchema = z.object({
   title: z.string().min(3, "Title is too short").max(50, "Title is too long"),
@@ -60,6 +63,7 @@ const UploadNoteForm = () => {
   const [fileUrl, setFileUrl] = useState<string>("");
   const [fileKey, setFileKey] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
+  const [fileSize, setFileSize] = useState<string>("");
   const [fileType, setFileType] = useState<string>("");
   const [fileError, setFileError] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -75,6 +79,7 @@ const UploadNoteForm = () => {
   const { mutate: createNote, isPending } = useCreateNote();
   console.log("courses fetched:", courses);
   const courseList = courses ?? [];
+
   const uploadToastId = "upload-toast";
 
   const form = useForm<NoteFormSchema>({
@@ -84,6 +89,41 @@ const UploadNoteForm = () => {
       description: "",
     },
   });
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFileError("");
+
+    const fileError = validateFile(file);
+    if (fileError) {
+      setFileError(fileError);
+      return;
+    }
+
+    toast.loading("Uploading file", { id: uploadToastId });
+    try {
+      const result = await uploadToCloudinary(file);
+      console.log("result from file upload", result);
+
+      setFileUrl(result.secure_url);
+      setFileKey(result.public_id);
+      setFileName(result.original_filename);
+      setFileSize(result.bytes);
+      setFileType(result.resource_type);
+
+      toast.success("File uploaded", {
+        id: uploadToastId,
+        description: "You may submit now!",
+      });
+    } catch (err: any) {
+      console.error("error uploading file", err);
+      toast.success("Upload failed", {
+        id: uploadToastId,
+        description: err.message || "Please try again",
+      });
+    }
+  };
 
   const handleSubmit = (data: NoteFormSchema) => {
     if (!fileUrl) {
@@ -105,6 +145,7 @@ const UploadNoteForm = () => {
         fileUrl,
         fileKey,
         fileName,
+        fileSize,
         fileType,
       },
       {
@@ -117,7 +158,7 @@ const UploadNoteForm = () => {
             id: toastId,
             description: result.digest,
           });
-          router.push("/resources/notes");
+          router.push("/resources/courses");
         },
         onError: (error) => {
           console.error("failed to create note:", error);
@@ -264,7 +305,7 @@ const UploadNoteForm = () => {
                 fileError ? "border-red-500" : "border-gray-500"
               } rounded-xl`}
             >
-              <UploadButton<OurFileRouter, "noteUploader">
+              {/* <UploadButton<OurFileRouter, "noteUploader">
                 endpoint="noteUploader"
                 onClientUploadComplete={(res: any) => {
                   console.log("respond from file upload:", res);
@@ -294,10 +335,18 @@ const UploadNoteForm = () => {
                   });
                 }}
                 // className="mt-2"
+              /> */}
+              <Input
+                type="file"
+                id="file-input"
+                accept={ALLOWED_TYPES.join(",")}
+                onChange={handleFileChange}
+                className="hidden"
               />
-              {fileError && <p className="text-red-500">{fileError}</p>}
+              <Label htmlFor="file-input">Choose file</Label>
             </div>
 
+            {fileError && <p className="text-red-500">{fileError}</p>}
             {fileUrl && (
               <p className="text-sm mt-1 truncate">Uploaded: {fileUrl}</p>
             )}

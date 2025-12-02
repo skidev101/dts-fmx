@@ -26,16 +26,16 @@ const NewItemDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-30 rounded-xl " align="center">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/resources/notes/new")}>
+          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/notes")}>
             Note
           </DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/new")}>
+          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/course")}>
             Course
           </DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/admin/room")}>
+          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/room")}>
             Room
           </DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/attendance/new")}>
+          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/attendance")}>
             Attendance
           </DropdownMenuItem>
         </DropdownMenuGroup>

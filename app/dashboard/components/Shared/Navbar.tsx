@@ -12,7 +12,7 @@ import NavbarUserMenu from "./NavbarMenu";
 import { User } from "@/types/user";
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import NewItemDropdown from "./NewItemDropdown";
+import NewItemDropdown from "../Admin/NewItemDropdown";
 
 const Navbar = ({ user }: { user: User }) => {
   const sidebar = useSidebar();
