@@ -32,6 +32,8 @@ export async function GET(req: Request) {
     const coursesWithType = courses.map((c) => ({ ...c, type: "course" }));
     const notesWithType = notes.map((n) => ({ ...n, type: "note" }));
 
+    console.log("sending results:", coursesWithType, notesWithType)
+
     return NextResponse.json(
       {
         courses: coursesWithType,

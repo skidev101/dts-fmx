@@ -10,7 +10,7 @@ import Searchbar from "./Searchbar";
 import { Separator } from "@/components/ui/separator";
 import NavbarUserMenu from "./NavbarMenu";
 import { User } from "@/types/user";
-import { Search, ShieldCheck } from "lucide-react";
+import { Search, ShieldCheck, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import NewItemDropdown from "../Admin/NewItemDropdown";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,8 @@ import { useCourses } from "@/hooks/course/useCourses";
 import { Course } from "@/types/course";
 import { useGlobalSearch } from "@/hooks/search/useGlobalSearch";
 import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import debounce from "lodash.debounce";
 
 const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -26,8 +28,20 @@ const Navbar = ({ user }: { user: User }) => {
   const { data, isLoading } = useGlobalSearch(search);
   const role: string = "STUDENT";
 
-  const notes = data.notes ?? [];
-  const courses = data.courses ?? [];
+  
+
+  const debouncedSearch = useMemo(
+    () => debounce((val: string) => setSearch(val), 500),
+    []
+  );
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  const notes = data?.notes ?? [];
+  const courses = data?.courses ?? [];
 
   return (
     <header
@@ -74,13 +88,13 @@ const Navbar = ({ user }: { user: User }) => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
 
               <Input
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => debouncedSearch(e.target.value)}
                 placeholder="Search course, notes, level.."
                 className="pl-10"
               />
 
               {search && (
-                <div className="absolute top-full left-0 w-full bg-white border rounded shadow-md mt-2 z-50 max-h-80 overflow-y-auto">
+                <Card className="absolute top-full left-0 w-full rounded-xl mt-2 z-50 max-h-80 overflow-y-auto">
                   {/* Loading */}
                   {isLoading && (
                     <div className="p-4 text-sm text-neutral-500">
@@ -96,7 +110,7 @@ const Navbar = ({ user }: { user: User }) => {
                       className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                     >
                       <div className="font-medium">{c.title}</div>
-                      <div className="text-xs text-neutral-500">
+                      <div className="text-xs text-foreground">
                         {c.code} • {c.level}
                       </div>
                     </button>
@@ -124,7 +138,7 @@ const Navbar = ({ user }: { user: User }) => {
                       No results found.
                     </div>
                   )}
-                </div>
+                </Card>
               )}
             </div>
 
