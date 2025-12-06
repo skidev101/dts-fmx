@@ -1,3 +1,4 @@
+import cloudinary from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -38,75 +39,71 @@ export async function GET(
   }
 }
 
-// export async function DELETE(
-//   req: NextRequest,
-//   { params }: { params: Promise<{ id: string }> }
-// ) {
-//   const courseId = (await params).id;
-//   if (!courseId) {
-//     return NextResponse.json(
-//       {
-//         message: "courseId is required",
-//       },
-//       { status: 400 }
-//     );
-//   }
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const courseId = (await params).id;
+  if (!courseId) {
+    return NextResponse.json(
+      {
+        message: "courseId is required",
+      },
+      { status: 400 }
+    );
+  }
 
-//   try {
-//     // const session = await auth();
-//     // if (!session.userId) {
-//     //   return NextResponse.json({ error: "unauthorized" }, { status: 403 });
-//     // }
-//     // const userId = session.userId;
+  try {
+    // const session = await auth();
+    // if (!session.userId) {
+    //   return NextResponse.json({ error: "unauthorized" }, { status: 403 });
+    // }
+    // const userId = session.userId;
 
-//     const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
+    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
 
-//     const foundUser = await prisma.user.findUnique({
-//       where: {
-//         clerkId: userId,
-//       },
-//     });
-//     if (!foundUser || foundUser.role !== "ADMIN") {
-//       return NextResponse.json({ error: "forbidden" }, { status: 403 });
-//     }
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+    if (!foundUser || foundUser.role !== "ADMIN") {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
 
-//     const notes = await prisma.note.findMany({
-//       where: {
-//         courseId,
-//       },
-//       select: {
-//         id: true,
-//         fileKey: true,
-//       },
-//     });
+    const notes = await prisma.note.findMany({
+      where: {
+        courseId,
+      },
+      select: {
+        id: true,
+        fileKey: true,
+      },
+    });
 
-//     const fileKeys = notes.map((n) => n.fileKey).filter(Boolean) as string[];
+    const fileKeys = notes.map((n) => n.fileKey).filter(Boolean) as string[];
 
-//     await prisma.note.deleteMany({
-//       where: {
-//         courseId,
-//       },
-//     });
+    // TODO: error handling for cloudinary deletion. refer to snippet(local)
+    if (fileKeys.length > 0) {
+      await Promise.all(
+        fileKeys.map((key) => cloudinary.uploader.destroy(key, { resource_type: "auto" }))
+      )
+    }
 
-//     await prisma.course.delete({
-//       where: {
-//         id: courseId,
-//       },
-//     });
+    await prisma.$transaction([
+      prisma.note.deleteMany({ where: { courseId } }),
+      prisma.course.delete({ where: { id: courseId } }),
+    ])
 
-//     if (fileKeys.length > 0) {
-//       await utapi.deleteFiles(fileKeys);
-//     }
-
-//     return NextResponse.json(
-//       { success: true, message: "Course deleted successfully" },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.error("error deleting course:", error);
-//     return NextResponse.json(
-//       { error: "Internal server error " },
-//       { status: 500 }
-//     );
-//   }
-// }
+    return NextResponse.json(
+      { success: true, message: "Course deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("error deleting course:", error);
+    return NextResponse.json(
+      { error: "Internal server error " },
+      { status: 500 }
+    );
+  }
+}

@@ -1,12 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-
-
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   try {
     const course = await prisma.course.findMany({
       orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        code: true,
+        level: true,
+        description: true,
+        createdAt: true,
+        notes: true,
+        createdBy: { select: { username: true } },
+      },
     });
 
     return NextResponse.json(course, { status: 200 });

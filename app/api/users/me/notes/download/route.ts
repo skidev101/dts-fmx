@@ -12,8 +12,8 @@ export async function GET(req: Request) {
     const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
     const foundUser = await prisma.user.findUnique({
       where: {
-        clerkId: userId
-      }
+        clerkId: userId,
+      },
     });
     if (!foundUser) {
       return NextResponse.json({ error: "user not found" }, { status: 404 });
@@ -34,10 +34,15 @@ export async function GET(req: Request) {
           select: {
             id: true,
             title: true,
+            description: true,
             fileUrl: true,
-            fileKey: false,
+            fileName: true,
+            fileType: true,
+            fileSize: true,
+            mimeType: true,
+            uploadedBy: { select: { username: true } },
             course: { select: { code: true, title: true } },
-            createdAt: true
+            createdAt: true,
           },
         },
       },
@@ -54,7 +59,7 @@ export async function GET(req: Request) {
       createdAt: l.createdAt,
       note: l.note,
     }));
-    console.log("payload created:", payload)
+    console.log("payload created:", payload);
 
     return NextResponse.json({ items: payload, nextCursor }, { status: 200 });
   } catch (err) {
@@ -87,7 +92,7 @@ export async function POST(req: Request) {
         { error: "user does not exist" },
         { status: 404 }
       );
-    };
+    }
 
     const { noteId } = await req.json();
     const noteExists = await prisma.note.findUnique({
