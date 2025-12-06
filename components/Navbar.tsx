@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import MobileNav from "./MobileNav";
+import { Home, NotebookTabs, Rocket } from "lucide-react";
 // import { getCurrentUser } from "@/lib/auth";
 
 const Navbar = async () => {
@@ -10,19 +11,23 @@ const Navbar = async () => {
     {
       href: "/",
       text: "Home",
+      icon: <Home />
     },
     {
       href: "/resources/courses",
       text: "Resoures",
+      icon: <Rocket />
     },
     {
-      href: "/",
+      href: "/room",
       text: "Join room",
+      icon: <NotebookTabs />
     },
   ];
   return (
     <header className="fixed top-0 z-10 backdrop-blur-md flex justify-between items-center w-full px-4 py-6">
       <div className="flex items-center gap-3">
+        
       <Image
         src="/logo.png"
         alt="logo"
@@ -56,7 +61,7 @@ const Navbar = async () => {
             <Link href="/login">Sign In</Link>
           </Button>
         )} */}
-        <Button variant="outline">
+        <Button variant="outline" asChild>
             <Link href="/dashboard">Dashboard</Link>
           </Button>
       </div>

@@ -15,8 +15,11 @@ export const useCreateCourse = () => {
     mutationFn: async (data: createCourseProps) => {
       console.log("data sent to api:", JSON.stringify(data))
       try {
-        const res = await fetch("/api/courses", {
+        const res = await fetch("/api/admin/courses", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(data),
         });
         console.log("response from create course api:", res);

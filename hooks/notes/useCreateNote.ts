@@ -19,6 +19,9 @@ export const useCreateNote = () => {
       try {
         const res = await fetch("/api/admin/notes", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(data),
         });
 

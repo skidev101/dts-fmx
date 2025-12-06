@@ -26,6 +26,7 @@ import {
 import { Field } from "@/components/ui/field";
 import { useCreateCourse } from "@/hooks/course/useCreateCourse";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 const newCourseSchema = z.object({
   title: z.string().min(3),
@@ -88,9 +89,9 @@ export default function NewCourseForm() {
   return (
     <Dialog open onOpenChange={() => router.back()}>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+        <DialogHeader className="text-left py-2">
           <DialogTitle>New Course</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="mt-1">
             Fill in the form below to create a new course. Click create when
             done.
           </DialogDescription>
@@ -99,8 +100,8 @@ export default function NewCourseForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
           {/* Code */}
           <Field>
-            <Label htmlFor="code">Course Code</Label>
-            <Input id="code" {...register("code")} />
+            <Label htmlFor="code">Course Code *</Label>
+            <Input id="code" {...register("code")} placeholder="DTS121" />
             {errors.code && (
               <p className="text-red-500 text-sm">{errors.code.message}</p>
             )}
@@ -108,8 +109,8 @@ export default function NewCourseForm() {
 
           {/* Title */}
           <Field>
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" {...register("title")} />
+            <Label htmlFor="title">Title *</Label>
+            <Input id="title" {...register("title")} placeholder="Introduction to Data science" />
             {errors.title && (
               <p className="text-red-500 text-sm">{errors.title.message}</p>
             )}
@@ -118,7 +119,7 @@ export default function NewCourseForm() {
           {/* Description */}
           <Field>
             <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register("description")} />
+            <Textarea id="description" {...register("description")} rows={6} className="resize-none max-h-8" />
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}
@@ -152,7 +153,7 @@ export default function NewCourseForm() {
             )}
           </Field>
 
-          <DialogFooter className="flex justify-end gap-2">
+          <DialogFooter className="flex justify-end gap-2 mt-2">
             <DialogClose asChild>
               <Button variant="outline" className="hover:cursor-pointer">Cancel</Button>
             </DialogClose>

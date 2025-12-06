@@ -12,6 +12,8 @@ import { Copy, DownloadCloud } from "lucide-react";
 import { Note } from "@/types/note";
 import formatDate from "@/utils/formatDate";
 import { copy } from "@/utils/clipboard";
+import { useDownloadLog } from "@/hooks/notes/useDownloadLog";
+import { toast } from "sonner";
 
 interface NoteDialogProps {
   note: Note | null;
@@ -22,21 +24,23 @@ interface NoteDialogProps {
 export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
   if (!note) return;
   console.log("note recieved as props:", note);
+  const { mutate: logDownload } = useDownloadLog();
+  const id = note.id;
 
   const handleFileDownload = async () => {
-    console.log("now in note download with filename:", note.fileName);
+    console.log("now in note download with note:", note);
     if (!note.fileName || !note.fileUrl) return;
-    console.log("now in note download test2 with filename:", note.fileName);
-    console.log("file url:", note.fileUrl);
-    console.log("file name:", note.fileName);
 
-    await fetch("/api/users/me/notes/download", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    logDownload(id, {
+      onSuccess: (result) => {
+        toast.success("Note download logged", { description: result.digest });
+        console.log("note download logged")
       },
-      body: JSON.stringify({ noteId: note.id }),
-    });
+      onError: (error) => {
+        toast.error("Failed to log download");
+        console.log("error logging download", error)
+      },
+    })
 
     const cleanFileName = note.fileName
       .replace(/\s+/g, "_")
@@ -70,7 +74,7 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
             {note.fileName?.split(".").pop()?.toUpperCase() || "PDF"}
           </div>
 
-          <div className="flex flex-col gap-3 mt-2 sm:ml-2">
+          <div className="flex flex-col gap-3 mt-2 sm:mt-0 sm:ml-2">
             <h1 className="text-lg sm:text-2xl capitalize font-black text-card-foreground">
               {note.title} - introduction to data analytics
             </h1>
@@ -89,12 +93,12 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
         <span className="text-xs text-card-foreground/60">size: 12kb</span>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => copy("hello world")}>
+          <Button variant="outline" onClick={() => copy("hello world")} className="text-foreground/80 hover:cursor-pointer active:scale-98">
             Copy link <Copy className="size-4" />
           </Button>
 
           {note.fileUrl && (
-            <Button variant="secondary" onClick={handleFileDownload}>
+            <Button variant="outline" onClick={handleFileDownload} className="text-foreground/80 hover:cursor-pointer active:scale-98">
               Download <DownloadCloud className="size-4" />
             </Button>
           )}

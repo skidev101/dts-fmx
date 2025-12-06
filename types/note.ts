@@ -9,6 +9,7 @@ export interface Note {
   fileUrl: string;
   fileName?: string | null;
   fileType?: string | null;
+  mimeType: string;
   uploadedById: string;
   courseId: string;
   downloads: number;

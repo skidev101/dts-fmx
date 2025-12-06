@@ -8,8 +8,10 @@ import {
 import NoteCard from "./NoteCard";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const RecentDownloads = () => {
+  const router = useRouter();
   const {
     data,
     isLoading,
@@ -41,9 +43,15 @@ const RecentDownloads = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl sm:text-2xl text-foreground/90 font-semibold ml-1">Recent downloads</h1>
-        <Button variant="ghost" className="hidden text-xs sm:flex justify-between hover:px-4 items-center hover:cursor-pointer origin-right">
-          View more 
+        <h1 className="text-xl sm:text-2xl text-foreground/90 font-semibold ml-1">
+          Recent downloads
+        </h1>
+        <Button
+          variant="link"
+          onClick={() => router.push("/dashboard/downloads")}
+          className="hidden text-xs sm:flex justify-between hover:px-4 items-center hover:cursor-pointer origin-right"
+        >
+          View more
           <ChevronRight className="size-4" />
         </Button>
       </div>
@@ -52,15 +60,19 @@ const RecentDownloads = () => {
 
       <div className="grid md:grid-cols-2 gap-3 mt-4">
         {allItems.slice(0, 2).map((item: any) => (
-          <NoteCard key={item.note.id} note={item.note} downloadDate={item.createdAt} />
+          <NoteCard
+            key={item.note.id}
+            note={item.note}
+            downloadDate={item.createdAt}
+          />
         ))}
       </div>
 
-      {hasNextPage && (
+      {/* {hasNextPage && (
         <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
           {isFetchingNextPage ? "Loading..." : "Load more"}
         </Button>
-      )}
+      )} */}
     </div>
   );
 };

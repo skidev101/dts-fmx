@@ -1,0 +1,1 @@
+**This folder contains some component/pages that may or may not be used in the future(_^-^_)**

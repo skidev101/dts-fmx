@@ -4,8 +4,9 @@ import { NoteDialog } from "@/components/notes/NoteDialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Note } from "@/types/note";
+import { detectFileType } from "@/utils/detectFileType";
 import formatDate from "@/utils/formatDate";
-import { ChartBarStacked } from "lucide-react";
+import { ChartBarStacked, FileSpreadsheet, FileText } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ const NoteCard = ({ note, downloadDate }: NoteCardProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   console.log("note recieved as props:", note);
+  const detectedType = detectFileType(note.mimeType);
 
   return (
     <>
@@ -27,16 +29,17 @@ const NoteCard = ({ note, downloadDate }: NoteCardProps) => {
           setDialogOpen(true);
           setSelectedNote(note);
         }}
-        className="relative p-4 rounded-3xl hover:cursor-pointer hover:bg-card/50 hover:scale-101 active:scale-99 transition-all duration-200"
+        className="relative min-w-[230px] p-4 rounded-3xl hover:cursor-pointer hover:bg-card/50 hover:scale-101 active:scale-99 transition-all duration-200"
       >
         <CardContent className="flex flex-col px-0">
-          <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-neutral-800 border">
+          <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-200 dark:bg-neutral-800 border">
             {/* <Image width={28} height={28} src="/file.svg" alt="file" /> */}
-            {note.fileName ? (
-              note.fileName.split(".").pop()?.toUpperCase() || "PDF"
+            <p className="text-neutral-400 font-semibold">{detectFileType(note.mimeType)}</p>
+            {/* {detectedType ? (
+              <p className="text-neutral-400">{detectedType}</p>
             ) : (
-              <ChartBarStacked className="size-8 text-neutral-400" />
-            )}
+              <p className="text-neutral-400">PDF</p>
+            )} */}
           </div>
           <div className="flex justify-center flex-col mt-4 ml-1">
             <h3 className="font-semibold text-foreground/90 capitalize text-lg">

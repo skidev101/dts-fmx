@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const RecommendedNotes = () => {
+const TopCourses = () => {
   return (
     <Card className="w-full min-w-[280px] h-[430px] rounded-3xl bg-card">
       <CardContent>
-        <h1 className="text-2xl font-semibold">Recommended</h1>
-        <p className="mt-2 text-foreground/80 text-xs">Notes recommended based on your activity</p>
+        <h1 className="text-2xl font-semibold">Top courses</h1>
+        <p className="mt-2 text-foreground/80 text-xs">Trending courses based on your level</p>
 
         {/* <div className="w-full h-full bg-neutral-800 border border-neutral-700 p-4 rounded-3xl  flex flex-col justify-center items-center mt-2">
               <div className="w-full flex justify-between items-center mt-10 px-8">
@@ -33,4 +33,4 @@ const RecommendedNotes = () => {
   );
 };
 
-export default RecommendedNotes;
+export default TopCourses;

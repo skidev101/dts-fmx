@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChartBarStacked, Loader2, Trash } from "lucide-react";
+import { ChartBarStacked, Info, Loader2, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useDeleteCourse } from "@/hooks/course/useDeleteCourse";
 import { useCourse } from "@/hooks/course/useCourse";
@@ -13,6 +13,8 @@ import { NoteDialog } from "@/components/notes/NoteDialog";
 import ResourceCard from "@/components/ResourceCard";
 import { Card, CardContent } from "@/components/ui/card";
 import formatDate from "@/utils/formatDate";
+import { Badge } from "@/components/ui/badge";
+import { formatLevel } from "@/utils/formatLevel";
 
 const CoursePage = () => {
   const params = useParams();
@@ -57,11 +59,21 @@ const CoursePage = () => {
     );
   }
 
+  const formattedLevel = formatLevel(course.level);
+
   return (
-    <div className="max-w-5xl mx-auto px-2 sm:px-4 py-6 sm:py-10">
+    <div className="relative max-w-5xl mx-auto px-2 sm:px-4 py-6 sm:py-10">
+      <Badge
+        variant="secondary"
+        className={`absolute -top-3 right-4 border ${formattedLevel.colors}`}
+      >
+        {formattedLevel.level}
+      </Badge>
       <div className="flex justify-between items-start">
         <div className="w-full">
-          <h1 className="text-4xl capitalize font-bold">{course.title}</h1>
+          <h1 className="text-3xl sm:text-4xl capitalize font-bold">
+            {course.title}
+          </h1>
           <p className="text-foreground/80 font-semibold uppercase mt-1 text-lg">
             {course.code}
           </p>
@@ -91,7 +103,9 @@ const CoursePage = () => {
 
       {course?.notes?.length === 0 ? (
         <div className="text-center mt-8">
-          <p>No notes for this course yet...</p>
+          <p className="text-card-foreground/80">
+            No notes for this course yet...
+          </p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4 mt-6">
@@ -123,6 +137,17 @@ const CoursePage = () => {
           ))}
         </div>
       )}
+
+      <div className=" mt-10">
+        <div className="flex gap-2 items-center">
+          <Info className="size-6 text-foreground/80" />
+          <h2 className="text-xl text-foreground/90">Info</h2>
+        </div>
+
+        <p className="text-foreground/70 mt-4">
+          Course created {formatDate(course.createdAt)} by {course.createdBy}
+        </p>
+      </div>
     </div>
   );
 };

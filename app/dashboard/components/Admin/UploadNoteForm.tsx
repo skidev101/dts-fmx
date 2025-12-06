@@ -26,8 +26,8 @@ import {
   CommandItem,
   CommandGroup,
 } from "@/components/ui/command";
-import { UploadButton } from "@uploadthing/react";
-import type { OurFileRouter } from "@/app/api/uploadthing/core";
+// import { UploadButton } from "@uploadthing/react";
+// import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { useCreateNote } from "@/hooks/notes/useCreateNote";
 import { useCourses } from "@/hooks/course/useCourses";
 import { Course } from "@/types/course";
@@ -47,19 +47,24 @@ import { useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/lib/uploadFile";
 import { Label } from "@/components/ui/label";
 import { ALLOWED_TYPES, validateFile } from "@/utils/fileValidator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const noteSchema = z.object({
   title: z.string().min(3, "Title is too short").max(50, "Title is too long"),
-  description: z
-    .string()
-    .min(3, "Description is too short")
-    .max(300, "Description is too long")
-    .optional(),
+  description: z.string().optional(),
 });
 type NoteFormSchema = z.infer<typeof noteSchema>;
 
 const UploadNoteForm = () => {
   const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string>("");
   const [fileKey, setFileKey] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
@@ -80,7 +85,6 @@ const UploadNoteForm = () => {
   console.log("courses fetched:", courses);
   const courseList = courses ?? [];
 
-  const uploadToastId = "upload-toast";
 
   const form = useForm<NoteFormSchema>({
     resolver: zodResolver(noteSchema),
@@ -101,52 +105,40 @@ const UploadNoteForm = () => {
       return;
     }
 
-    toast.loading("Uploading file", { id: uploadToastId });
-    try {
-      const result = await uploadToCloudinary(file);
-      console.log("result from file upload", result);
-
-      setFileUrl(result.secure_url);
-      setFileKey(result.public_id);
-      setFileName(result.original_filename);
-      setFileSize(result.bytes);
-      setFileType(result.resource_type);
-
-      toast.success("File uploaded", {
-        id: uploadToastId,
-        description: "You may submit now!",
-      });
-    } catch (err: any) {
-      console.error("error uploading file", err);
-      toast.success("Upload failed", {
-        id: uploadToastId,
-        description: err.message || "Please try again",
-      });
-    }
+    setFile(file);
   };
 
-  const handleSubmit = (data: NoteFormSchema) => {
-    if (!fileUrl) {
-      setFileError("Please upload a file first");
-      return;
-    }
+  const handleReset = async () => {
+    setFile(null);
+    setFileError("");
+    setSelectedCourse("");
+    setCourseFieldError("");
+    form.reset();
+  };
+
+  const handleSubmit = async (data: NoteFormSchema) => {
     if (!selectedCourse || selectedCourse == "") {
       setCourseFieldError("Please select a course");
       return;
     }
-
+    if (!file) {
+      setFileError("Please upload a file first");
+      return;
+    }
     const toastId = "note-toast";
+    toast.loading("Uploading note...", { id: toastId });
 
+    const upload = await uploadToCloudinary(file);
     createNote(
       {
         title: data.title,
         description: data.description || "",
         courseId: selectedCourseId,
-        fileUrl,
-        fileKey,
-        fileName,
-        fileSize,
-        fileType,
+        fileUrl: upload.secure_url,
+        fileKey: upload.public_id,
+        fileName: upload.original_filename,
+        fileSize: upload.bytes,
+        fileType: upload.resource_type,
       },
       {
         //  onMutate: () => {
@@ -163,6 +155,7 @@ const UploadNoteForm = () => {
         onError: (error) => {
           console.error("failed to create note:", error);
           toast.error("Failed to create note", {
+            id: toastId,
             description: error.message || "Please try again",
           });
         },
@@ -186,17 +179,17 @@ const UploadNoteForm = () => {
   }
 
   return (
-    <Dialog open onOpenChange={() => router.back()}>
-      <DialogContent className="sm:max-w-[425px] ">
-        <DialogHeader>
-          <DialogTitle>New note</DialogTitle>
-          <DialogDescription>
-            Fill in the form below to create a new note under a course. Click
-            submit when done.
-          </DialogDescription>
-        </DialogHeader>{" "}
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <FieldGroup>
+    <Card className="bg-card/30 w-full rounded-2xl sm:rounded-3xl px-0 max-w-2xl">
+      <CardHeader className="px-4 sm:px-6">
+        <CardTitle className="text-2xl">New note</CardTitle>
+        <CardDescription>
+          Fill in the form below to create a new note under a course. Click
+          submit when done.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-4 sm:px-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <FieldGroup className="flex flex-col sm:flex-row items-center gap-2">
             {/* <div className="flex items-center gap-2"> */}
             {/* Title */}
             <Controller
@@ -205,7 +198,7 @@ const UploadNoteForm = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Title *</FieldLabel>
-                  <Input {...field} placeholder="Intro to Data science" />
+                  <Input {...field} placeholder="Intro to Data science" className="border-neutral-800" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -214,19 +207,19 @@ const UploadNoteForm = () => {
             />
 
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-              <div className="flex flex-col gap-3">
+              <div className="flex w-full flex-col gap-3 mt-2 sm:mt-0">
                 <FieldLabel>Course *</FieldLabel>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
                     aria-expanded={popoverOpen}
-                    className={`w-full justify-between ${
-                      courseFieldError && "border-red-500"
-                    }`}
+                    className={`w-full min-w-[230px] justify-between border-neutral-800! ${
+                      courseFieldError && "border! border-red-800!"
+                    } hover:cursor-pointer ${!selectedCourse && "text-neutral-400"}`}
                   >
                     {selectedCourse
-                      ? selectedCourse
+                      ? selectedCourse.toUpperCase()
                       : // ? courseList.find(
                         //     (course: Course) => course.code === selectedCourse
                         //   )
@@ -239,7 +232,7 @@ const UploadNoteForm = () => {
                 )}
               </div>
 
-              <PopoverContent className="w-[300px] p-0">
+              <PopoverContent className="w-[230px] p-0">
                 <Command>
                   <CommandInput placeholder="Search courses" className="h-9" />
                   <CommandList>
@@ -257,7 +250,7 @@ const UploadNoteForm = () => {
                             setPopoverOpen(false);
                           }}
                         >
-                          {course.code}
+                          {course.code.toUpperCase()}
 
                           <Check
                             className={cn(
@@ -286,9 +279,9 @@ const UploadNoteForm = () => {
                 <FieldLabel>Description</FieldLabel>
                 <Textarea
                   {...field}
-                  rows={6}
+                  rows={8}
                   placeholder="Note description"
-                  className="resize-none"
+                  className="resize-none min-h-24 border-neutral-800"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -301,7 +294,7 @@ const UploadNoteForm = () => {
           <Field>
             <FieldLabel>Upload File *</FieldLabel>
             <div
-              className={`flex justify-center items-center py-4 border border-dashed ${
+              className={`flex justify-center items-center py-4 border border-dashed min-h-24 ${
                 fileError ? "border-red-500" : "border-gray-500"
               } rounded-xl`}
             >
@@ -352,22 +345,25 @@ const UploadNoteForm = () => {
             )}
           </Field>
         </form>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" className="hover:cursor-pointer">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(handleSubmit)}
-            disabled={isPending}
-          >
-            {isPending ? "Submitting..." : "Submit"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+      <CardFooter className="flex justify-end items-center gap-2 mt-4">
+        <Button
+          variant="outline"
+          onClick={handleReset}
+          className="hover:cursor-pointer"
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          onClick={form.handleSubmit(handleSubmit)}
+          disabled={isPending}
+          className="hover:cursor-pointer"
+        >
+          {isPending ? "Submitting..." : "Submit"}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

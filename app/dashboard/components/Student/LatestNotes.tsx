@@ -37,7 +37,7 @@ const LatestNotes = () => {
     <div className="w-full flex flex-col">
       <div className="flex justify-between items-center">
         <h1 className="text-xl sm:text-2xl text-foreground/90 font-semibold ml-1">New notes</h1>
-        <Button variant="ghost" className="hidden sm:flex text-xs justify-between hover:px-4 items-center hover:cursor-pointer origin-right">
+        <Button variant="link" className="hidden sm:flex text-xs justify-between hover:px-4 items-center hover:cursor-pointer origin-right">
           View more 
           <ChevronRight className="size-4" />
         </Button>
@@ -51,11 +51,11 @@ const LatestNotes = () => {
         ))}
       </div>
 
-      {hasNextPage && (
+      {/* {hasNextPage && (
         <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
           {isFetchingNextPage ? "Loading..." : "Load more"}
         </Button>
-      )}
+      )} */}
     </div>
   );
 };
