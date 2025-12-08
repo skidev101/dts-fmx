@@ -8,7 +8,7 @@ import { useDeleteCourse } from "@/hooks/course/useDeleteCourse";
 import { useCourse } from "@/hooks/course/useCourse";
 import { useParams, useRouter } from "next/navigation";
 import { AlertDialogue } from "@/components/AlertDialogue";
-import { Note } from "@/types/note";
+import { Note, NoteWithRelations } from "@/types/note";
 import { NoteDialog } from "@/components/notes/NoteDialog";
 import ResourceCard from "@/components/ResourceCard";
 import { Card, CardContent } from "@/components/ui/card";
@@ -90,7 +90,7 @@ const CoursePage = () => {
         </div>
 
         {/* ADMIN DELETE */}
-        {/* {isAdmin && <AlertDialogue action={handleDelete} />} */}
+        {isAdmin && <AlertDialogue action={handleDelete} />}
       </div>
 
       <h2 className="text-2xl text-foreground/95 mt-10">Notes</h2>

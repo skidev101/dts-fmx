@@ -14,6 +14,7 @@ import formatDate from "@/utils/formatDate";
 import { copy } from "@/utils/clipboard";
 import { useDownloadLog } from "@/hooks/notes/useDownloadLog";
 import { toast } from "sonner";
+import { formatBytes } from "@/utils/formatBytes";
 
 interface NoteDialogProps {
   note: Note | null;
@@ -34,34 +35,48 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
     logDownload(id, {
       onSuccess: (result) => {
         toast.success("Note download logged", { description: result.digest });
-        console.log("note download logged")
+        console.log("note download logged");
       },
       onError: (error) => {
         toast.error("Failed to log download");
-        console.log("error logging download", error)
+        console.log("error logging download", error);
       },
-    })
+    });
 
+    // const cleanFileName = note.fileName
+    //   .replace(/\s+/g, "_")
+    //   .replace(/[^\w.\-]/g, "");
+    // const url = `${note.fileUrl}?fl_attachment=1&fn=${encodeURIComponent(
+    //   cleanFileName
+    // )}`;
+
+    // const link = document.createElement("a");
+    // link.href = url;
+    // link.download = cleanFileName; // works if same-origin, safe to keep
+    // document.body.appendChild(link);
+
+    // link.click();
+    // document.body.removeChild(link);
+
+    try {
+    // Clean the filename for safe download
     const cleanFileName = note.fileName
       .replace(/\s+/g, "_")
       .replace(/[^\w.\-]/g, "");
-    const extension = note.fileName.split(".").pop() || "txt";
 
-    const link = document.createElement("a");
-    link.href = `${note.fileUrl}?download=1`;
-    link.download = `dts-note-${cleanFileName}.${extension}`;
-    document.body.appendChild(link);
-
-    try {
-      link.click();
-    } catch (err) {
-      console.warn("direct download failed, opening in new tab:", err);
-      window.open(note.fileUrl, "_blank");
-    }
-
-    document.body.removeChild(link);
+    // Create a temporary link
+    const a = document.createElement("a");
+    a.href = note.fileUrl;        // direct Cloudinary URL
+    a.download = cleanFileName;   // force download with proper name
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch (err) {
+    console.error("Failed to download file", err);
+    // Fallback: open in a new tab
+    window.open(note.fileUrl, "_blank");
+  }
   };
-
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,15 +86,15 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
         </DialogHeader>
         <div className="flex flex-col sm:flex-row gap-2 mt-2">
           <div className="flex justify-center items-center w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-accent rounded-md sm:rounded-2xl">
-            {note.fileName?.split(".").pop()?.toUpperCase() || "PDF"}
+            {note.fileType?.toUpperCase()}
           </div>
 
           <div className="flex flex-col gap-3 mt-2 sm:mt-0 sm:ml-2">
             <h1 className="text-lg sm:text-2xl capitalize font-black text-card-foreground">
-              {note.title} - introduction to data analytics
+              {note.title}
             </h1>
-            <p className="text-foreground/60 text-sm">
-              Uploaded {formatDate(note.createdAt)} by ski101
+            <p className="text-foreground/60 text-sm -mt-3 sm:mt-0">
+              {formatDate(note.createdAt)} by {note.uploadedBy.username}
             </p>
           </div>
         </div>
@@ -90,15 +105,25 @@ export const NoteDialog = ({ note, open, onOpenChange }: NoteDialogProps) => {
           </p>
         )}
 
-        <span className="text-xs text-card-foreground/60">size: 12kb</span>
+        <span className="text-xs text-card-foreground/60">
+          size: {formatBytes(note.fileSize)}
+        </span>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => copy("hello world")} className="text-foreground/80 hover:cursor-pointer active:scale-98">
+          <Button
+            variant="outline"
+            onClick={() => copy("hello world")}
+            className="text-foreground/80 hover:cursor-pointer active:scale-98"
+          >
             Copy link <Copy className="size-4" />
           </Button>
 
           {note.fileUrl && (
-            <Button variant="outline" onClick={handleFileDownload} className="text-foreground/80 hover:cursor-pointer active:scale-98">
+            <Button
+              variant="outline"
+              onClick={handleFileDownload}
+              className="text-foreground/80 hover:cursor-pointer active:scale-98"
+            >
               Download <DownloadCloud className="size-4" />
             </Button>
           )}

@@ -8,6 +8,7 @@ interface createNoteProps {
   fileName: string;
   fileSize: string;
   fileType: string;
+  resourceType: string;
   courseId: string;
 }
 

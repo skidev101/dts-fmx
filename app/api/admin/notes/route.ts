@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     // }
 
     // const userId = session.userId;
-    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
+    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt";  // new id
 
     const foundUser = await prisma.user.findUnique({
       where: {

@@ -59,7 +59,7 @@ model Note {
   fileName     String?
   fileType     String?
   fileSize     Int?
-  mimeType     String?
+  resourceType String?
   uploadedBy   User?    @relation("UserUploadedNotes", fields: [uploadedById], references: [id], onDelete: SetNull)
   uploadedById String?
   course       Course   @relation("NoteCourse", fields: [courseId], references: [id], onDelete: Cascade)

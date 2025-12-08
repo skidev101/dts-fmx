@@ -1,6 +1,6 @@
-function formatSize(bytes: number) {
+export function formatBytes(bytes: number) {
   if (!bytes) return "0 KB";
   const kb = bytes / 1024;
-  if (kb < 1024) return `${kb.toFixed(1)} KB`;
-  return `${(kb / 1024).toFixed(1)} MB`;
-}
+  if (kb < 1024) return `${Math.ceil(kb)} KB`;
+  return `${Math.ceil(kb / 1024)} MB`;
+};

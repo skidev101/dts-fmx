@@ -2,7 +2,6 @@ import cloudinary from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -20,7 +19,9 @@ export async function GET(
   try {
     const course = await prisma.course.findUnique({
       where: { id: courseId },
-      include: { notes: true },
+      include: {
+        notes: { include: { uploadedBy: true } },
+      },
     });
 
     if (!course) {
@@ -60,7 +61,7 @@ export async function DELETE(
     // }
     // const userId = session.userId;
 
-    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
+    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt";
 
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -86,14 +87,16 @@ export async function DELETE(
     // TODO: error handling for cloudinary deletion. refer to snippet(local)
     if (fileKeys.length > 0) {
       await Promise.all(
-        fileKeys.map((key) => cloudinary.uploader.destroy(key, { resource_type: "auto" }))
-      )
+        fileKeys.map((key) =>
+          cloudinary.uploader.destroy(key, { resource_type: "auto" })
+        )
+      );
     }
 
     await prisma.$transaction([
       prisma.note.deleteMany({ where: { courseId } }),
       prisma.course.delete({ where: { id: courseId } }),
-    ])
+    ]);
 
     return NextResponse.json(
       { success: true, message: "Course deleted successfully" },

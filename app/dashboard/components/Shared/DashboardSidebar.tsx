@@ -87,9 +87,9 @@ export async function DashboardSidebar({
       <SidebarContent className="mt-2">
         <SideNav items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <NavUser user={data.user} />
-      </SidebarFooter>
+      </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );

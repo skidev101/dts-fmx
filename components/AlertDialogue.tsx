@@ -16,9 +16,9 @@ export const AlertDialogue = ({action}: { action: () => void }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="destructive" className="hover:bg-destructive/80! hover:scale-102 active:scale-98 hover:cursor-pointer">
           <Trash className="size-4" />
-          Delete course
+          
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -35,8 +35,8 @@ export const AlertDialogue = ({action}: { action: () => void }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={action}>Continue</AlertDialogAction>
+          <AlertDialogCancel className="hover:cursor-pointer">Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={action} className="hover:cursor-pointer">Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

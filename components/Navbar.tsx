@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import MobileNav from "./MobileNav";
 import { Home, NotebookTabs, Rocket } from "lucide-react";
-// import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 
 const Navbar = async () => {
   // const user = await getCurrentUser();
@@ -58,7 +58,7 @@ const Navbar = async () => {
           </Button>
         ) : (
           <Button>
-            <Link href="/login">Sign In</Link>
+            <Link href="/auth/login">Sign In</Link>
           </Button>
         )} */}
         <Button variant="outline" asChild>

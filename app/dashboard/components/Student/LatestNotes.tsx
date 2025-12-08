@@ -28,7 +28,9 @@ const LatestNotes = () => {
     );
   }
 
-  
+  if (isLoading) {
+    return <Loader2 className="size-14 mt-14" />;
+  }
 
   const allNotes = data?.pages.flatMap((page: any) => page.notes) ?? [];
   console.log("all notes:", allNotes);
@@ -36,9 +38,16 @@ const LatestNotes = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl sm:text-2xl text-foreground/90 font-semibold ml-1">New notes</h1>
-        <Button variant="link" className="hidden sm:flex text-xs justify-between hover:px-4 items-center hover:cursor-pointer origin-right">
-          View more 
+        <h1 className="text-xl sm:text-2xl text-foreground/90 font-semibold ml-1">
+          New notes
+        </h1>
+        <Button
+          variant="link"
+          className={`${
+            !hasNextPage && "hidden"
+          } hidden text-xs sm:flex justify-between hover:px-4 items-center hover:cursor-pointer origin-right`}
+        >
+          View more
           <ChevronRight className="size-4" />
         </Button>
       </div>

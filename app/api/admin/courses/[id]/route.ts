@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { UTApi } from "uploadthing/server";
-
-
-const utapi = new UTApi();
+import cloudinary from "@/lib/cloudinary";
 
 
 export async function DELETE(
@@ -13,7 +10,9 @@ export async function DELETE(
   const courseId = (await params).id;
   if (!courseId) {
     return NextResponse.json(
-      { message: "courseId is required" },
+      {
+        message: "courseId is required",
+      },
       { status: 400 }
     );
   }
@@ -25,7 +24,7 @@ export async function DELETE(
     // }
     // const userId = session.userId;
 
-    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn";
+    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt";
 
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -43,26 +42,27 @@ export async function DELETE(
       select: {
         id: true,
         fileKey: true,
+        resourceType: true
       },
     });
 
-    const fileKeys = notes.map((n) => n.fileKey).filter(Boolean) as string[];
+    await Promise.all(
+      notes.map(async (note) => {
+        if (!note.resourceType) return;
+        try {
+          await cloudinary.uploader.destroy(note.fileKey, {
+            resource_type: note.resourceType
+          }) 
+        } catch(err) {
+          console.error(`failed to delete note ${note.id}`);
+        }
+      })
+    )
 
-    await prisma.note.deleteMany({
-      where: {
-        courseId,
-      },
-    });
-
-    await prisma.course.delete({
-      where: {
-        id: courseId,
-      },
-    });
-
-    if (fileKeys.length > 0) {
-      await utapi.deleteFiles(fileKeys);
-    }
+    await prisma.$transaction([
+      prisma.note.deleteMany({ where: { courseId } }),
+      prisma.course.delete({ where: { id: courseId } }),
+    ]);
 
     return NextResponse.json(
       { success: true, message: "Course deleted successfully" },

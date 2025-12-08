@@ -49,7 +49,7 @@ const RecentDownloads = () => {
         <Button
           variant="link"
           onClick={() => router.push("/dashboard/downloads")}
-          className="hidden text-xs sm:flex justify-between hover:px-4 items-center hover:cursor-pointer origin-right"
+          className={`${!hasNextPage && "hidden"} hidden text-xs sm:flex justify-between hover:px-4 items-center hover:cursor-pointer origin-right`}
         >
           View more
           <ChevronRight className="size-4" />

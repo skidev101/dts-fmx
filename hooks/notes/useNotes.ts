@@ -25,7 +25,7 @@ export const useNotes = () => {
       const res = await fetch(`/api/notes?${params}`);
       console.log("response from notes api:", res);
       if (!res.ok) throw new Error("failed to fetch notes");
-      console.error("failed to fetch courses:");
+      console.error("failed to fetch notes:");
       return res.json();
     },
 

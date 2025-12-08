@@ -7,7 +7,7 @@ export const useDeleteCourse = (id: string) => {
   return useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch(`/api/courses/${id}`, {
+        const res = await fetch(`/api/admin/courses/${id}`, {
           method: "DELETE",
         });
         console.log("response from create course api:", res);

@@ -20,15 +20,19 @@ import { useGlobalSearch } from "@/hooks/search/useGlobalSearch";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import debounce from "lodash.debounce";
+import { Button } from "@/components/ui/button";
+import { formatLevel } from "@/utils/formatLevel";
+import { Note } from "@/types/note";
+import { NoteDialog } from "@/components/notes/NoteDialog";
 
 const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
   const sidebar = useSidebar();
   const [search, setSearch] = useState("");
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { data, isLoading } = useGlobalSearch(search);
-  const role: string = "STUDENT";
-
-  
+  const role: string = "ADMIN";
 
   const debouncedSearch = useMemo(
     () => debounce((val: string) => setSearch(val), 500),
@@ -94,42 +98,51 @@ const Navbar = ({ user }: { user: User }) => {
               />
 
               {search && (
-                <Card className="absolute top-full left-0 w-full rounded-xl mt-2 z-50 max-h-80 overflow-y-auto">
+                <Card className="absolute top-full left-0 w-full rounded-xl px-1 py-2 mt-2 z-50 max-h-80 overflow-y-auto">
                   {/* Loading */}
                   {isLoading && (
-                    <div className="p-4 text-sm text-neutral-500">
-                      Searching...
+                    <div className="w-full flex justify-center p-4 text-sm text-neutral-500">
+                      <Loader2 className="size-6 animate-spin" />
                     </div>
                   )}
 
                   {/* Courses */}
-                  {courses.map((c: any) => (
-                    <button
-                      key={c.id}
-                      onClick={() => router.push(`/courses/${c.id}`)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                    >
-                      <div className="font-medium">{c.title}</div>
-                      <div className="text-xs text-foreground">
-                        {c.code} • {c.level}
+                  {courses.map((c: any) => {
+                    const formattedLevel = formatLevel(c.level);
+                    return (
+                      <div
+                        key={c.id}
+                        onClick={() =>
+                          router.push(`/resources/courses/${c.id}`)
+                        }
+                        className="w-full px-3 py-2 capitalize hover:bg-neutral-800 rounded-lg hover:cursor-pointer text-sm transition-all duration-200"
+                      >
+                        <div className="font-medium">{c.title}</div>
+                        <div className="text-xs text-foreground/80">
+                          {c.code.toUpperCase()} •{" "}
+                          <span>{formattedLevel.level}</span>
+                        </div>
                       </div>
-                    </button>
-                  ))}
+                    );
+                  })}
 
                   {/* Notes */}
                   {notes.map((n: any) => (
-                    <button
+                    <div
                       key={n.id}
-                      onClick={() => router.push(`/notes/${n.id}`)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                      onClick={() => {
+                        setDialogOpen(true);
+                        setSelectedNote(n);
+                      }}
+                      className="w-full px-3 py-2 capitalize hover:bg-neutral-800 rounded-lg hover:cursor-pointer text-sm transition-all duration-200"
                     >
-                      <div className="font-medium">{n.title}</div>
+                      <div className="font-medium capitalize">{n.title}</div>
                       {n.description && (
-                        <div className="text-xs text-neutral-500 line-clamp-1">
+                        <div className="text-xs text-foreground/80 truncate line-clamp-1">
                           {n.description}
                         </div>
                       )}
-                    </button>
+                    </div>
                   ))}
 
                   {/* No results */}
@@ -148,6 +161,12 @@ const Navbar = ({ user }: { user: User }) => {
           </div>
         </div>
       </nav>
+
+      <NoteDialog
+        open={dialogOpen}
+        note={selectedNote}
+        onOpenChange={setDialogOpen}
+      />
     </header>
   );
 };

@@ -65,11 +65,6 @@ type NoteFormSchema = z.infer<typeof noteSchema>;
 const UploadNoteForm = () => {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string>("");
-  const [fileKey, setFileKey] = useState<string>("");
-  const [fileName, setFileName] = useState<string>("");
-  const [fileSize, setFileSize] = useState<string>("");
-  const [fileType, setFileType] = useState<string>("");
   const [fileError, setFileError] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
@@ -84,7 +79,6 @@ const UploadNoteForm = () => {
   const { mutate: createNote, isPending } = useCreateNote();
   console.log("courses fetched:", courses);
   const courseList = courses ?? [];
-
 
   const form = useForm<NoteFormSchema>({
     resolver: zodResolver(noteSchema),
@@ -129,6 +123,7 @@ const UploadNoteForm = () => {
     toast.loading("Uploading note...", { id: toastId });
 
     const upload = await uploadToCloudinary(file);
+    console.log("result from file upload:", upload)
     createNote(
       {
         title: data.title,
@@ -138,7 +133,8 @@ const UploadNoteForm = () => {
         fileKey: upload.public_id,
         fileName: upload.original_filename,
         fileSize: upload.bytes,
-        fileType: upload.resource_type,
+        fileType: upload.format,
+        resourceType: upload.resource_type,
       },
       {
         //  onMutate: () => {
@@ -198,7 +194,11 @@ const UploadNoteForm = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Title *</FieldLabel>
-                  <Input {...field} placeholder="Intro to Data science" className="border-neutral-800" />
+                  <Input
+                    {...field}
+                    placeholder="Intro to Data science"
+                    className="border-neutral-800"
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -216,7 +216,9 @@ const UploadNoteForm = () => {
                     aria-expanded={popoverOpen}
                     className={`w-full min-w-[230px] justify-between border-neutral-800! ${
                       courseFieldError && "border! border-red-800!"
-                    } hover:cursor-pointer ${!selectedCourse && "text-neutral-400"}`}
+                    } hover:cursor-pointer ${
+                      !selectedCourse && "text-neutral-400"
+                    }`}
                   >
                     {selectedCourse
                       ? selectedCourse.toUpperCase()
@@ -336,13 +338,14 @@ const UploadNoteForm = () => {
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <Label htmlFor="file-input">Choose file</Label>
+              {file ? (
+                <p>Uploaded</p>
+              ) : (
+                <Label htmlFor="file-input" className="hover:cursor-pointer">Choose file</Label>
+              )}
             </div>
 
             {fileError && <p className="text-red-500">{fileError}</p>}
-            {fileUrl && (
-              <p className="text-sm mt-1 truncate">Uploaded: {fileUrl}</p>
-            )}
           </Field>
         </form>
       </CardContent>
@@ -357,7 +360,7 @@ const UploadNoteForm = () => {
         <Button
           type="submit"
           onClick={form.handleSubmit(handleSubmit)}
-          disabled={isPending}
+          disabled={isPending || !courses}
           className="hover:cursor-pointer"
         >
           {isPending ? "Submitting..." : "Submit"}

@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
-    // const session = await auth();
-    // if (!session?.userId) {
-    //   return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    // }
+    // const user = await requireUser();
+    // const clerkId = user.clerkId;
 
-    // const userId = session.userId;
-    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
+    // console.log("new user:", user)
+
+    const clerkId = "user_36U6eejMHENdCbVJwo3s5s4teFt"; // temporary mocking. new id
     const foundUser = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
+      where: { clerkId },
     });
     if (!foundUser) {
       return NextResponse.json({ error: "user not found" }, { status: 404 });
@@ -39,7 +37,7 @@ export async function GET(req: Request) {
             fileName: true,
             fileType: true,
             fileSize: true,
-            mimeType: true,
+            resourceType: true,
             uploadedBy: { select: { username: true } },
             course: { select: { code: true, title: true } },
             createdAt: true,
@@ -79,7 +77,7 @@ export async function POST(req: Request) {
     // }
 
     // const userId = session.userId;
-    const userId = "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn"; // temporary mocking
+    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt"; // temporary mocking
 
     const foundUser = await prisma.user.findUnique({
       where: {
