@@ -18,6 +18,7 @@ export async function DashboardSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   // const user = await getCurrentUser();
   // if (!user) redirect("/login");
+  const role: string = "ADMIN";
 
   const data = {
     navMain: [
@@ -32,7 +33,7 @@ export async function DashboardSidebar({
         url: "/resources",
         iconKey: "NotebookTabs",
         isCollapsible: true,
-                isActive: true,
+        isActive: true,
 
         items: [
           {
@@ -70,6 +71,15 @@ export async function DashboardSidebar({
       avatar: user.avatarUrl || "",
     },
   };
+
+  if (role === "ADMIN") {
+    data.navMain.push({
+      title: "Users",
+      url: "/dashboard/users",
+      iconKey: "User",
+      isCollapsible: false,
+    });
+  }
 
   return (
     <Sidebar className="fixed" collapsible="icon" {...props}>

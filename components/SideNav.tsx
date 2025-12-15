@@ -5,6 +5,7 @@ import {
   HomeIcon,
   NotebookTabs,
   Rocket,
+  User,
   type LucideIcon,
 } from "lucide-react";
 
@@ -29,6 +30,7 @@ const ICONS: Record<string, LucideIcon> = {
   HomeIcon,
   NotebookTabs,
   Rocket,
+  User
 };
 
 export function SideNav({
@@ -46,9 +48,6 @@ export function SideNav({
     }[];
   }[];
 }) {
-
-  
-
   return (
     <SidebarGroup>
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
@@ -64,22 +63,30 @@ export function SideNav({
             >
               <SidebarMenuItem>
                 {item.isCollapsible ? (
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton className="hover:cursor-pointer" tooltip={item.title}>
-                    {Icon && <Icon />}
-                    <span className="text-md">{item.title}</span>
-                    {item.isCollapsible && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      className="hover:cursor-pointer"
+                      tooltip={item.title}
+                    >
+                      {Icon && <Icon />}
+                      <span className="text-md">{item.title}</span>
+                      {item.isCollapsible && (
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      )}
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
                 ) : (
                   <Link href={item.url}>
-
-                  <SidebarMenuButton className="hover:cursor-pointer" tooltip={item.title}>
-                    {Icon && <Icon />}
-                    <span className="text-md">{item.title}</span>
-                    {item.isCollapsible && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
-                  </SidebarMenuButton>
+                    <SidebarMenuButton
+                      className="hover:cursor-pointer"
+                      tooltip={item.title}
+                    >
+                      {Icon && <Icon />}
+                      <span className="text-md">{item.title}</span>
+                      {item.isCollapsible && (
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      )}
+                    </SidebarMenuButton>
                   </Link>
                 )}
                 <CollapsibleContent>

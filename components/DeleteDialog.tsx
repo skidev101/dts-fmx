@@ -12,15 +12,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { OctagonAlert, Trash } from "lucide-react";
 
-export const AlertDialogue = ({action}: { action: () => void }) => {
+export const DeleteDialog = ({
+  id,
+  action,
+  setDeleteId,
+  isLoading,
+  alertText
+}: {
+  id: string;
+  action: () => void;
+  setDeleteId: (id: string) => void;
+  isLoading: boolean;
+  alertText: string
+}) => {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="hover:bg-destructive/80! hover:scale-102 active:scale-98 hover:cursor-pointer">
-          <Trash className="size-4" />
-          
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={!!id} onOpenChange={() => setDeleteId("")}>
+     
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -30,13 +37,20 @@ export const AlertDialogue = ({action}: { action: () => void }) => {
             Are you absolutely sure?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[15px]">
-            This action cannot be undone. This will permanently delete this
-            course and all related notes.
+            {alertText}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="hover:cursor-pointer">Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={action} className="hover:cursor-pointer">Continue</AlertDialogAction>
+          <AlertDialogCancel className="hover:cursor-pointer">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={action}
+            disabled={isLoading}
+            className="hover:cursor-pointer"
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

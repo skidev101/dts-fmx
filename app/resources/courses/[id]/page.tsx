@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useDeleteCourse } from "@/hooks/course/useDeleteCourse";
 import { useCourse } from "@/hooks/course/useCourse";
 import { useParams, useRouter } from "next/navigation";
-import { AlertDialogue } from "@/components/AlertDialogue";
+import { DeleteDialog } from "@/components/DeleteDialog";
 import { Note, NoteWithRelations } from "@/types/note";
 import { NoteDialog } from "@/components/notes/NoteDialog";
 import ResourceCard from "@/components/ResourceCard";
@@ -21,6 +21,7 @@ const CoursePage = () => {
   const router = useRouter();
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string>("");
   const id = params.id as string;
   const { data: course, isLoading, isError } = useCourse(id);
   const { mutate: deleteCourse, isPending } = useDeleteCourse(id);
@@ -90,7 +91,15 @@ const CoursePage = () => {
         </div>
 
         {/* ADMIN DELETE */}
-        {isAdmin && <AlertDialogue action={handleDelete} />}
+        {isAdmin && (
+          <Button
+            variant="destructive"
+            onClick={() => setDeleteId(id)}
+            className="hover:bg-destructive/80! hover:scale-102 active:scale-98 hover:cursor-pointer"
+          >
+            <Trash className="size-4" />
+          </Button>
+        )}
       </div>
 
       <h2 className="text-2xl text-foreground/95 mt-10">Notes</h2>
@@ -148,6 +157,15 @@ const CoursePage = () => {
           Course created {formatDate(course.createdAt)} by {course.createdBy}
         </p>
       </div>
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        id={deleteId || ""}
+        action={handleDelete}
+        setDeleteId={setDeleteId}
+        isLoading={isPending}
+        alertText="This action cannot be undone. This will permanently delete this course and all related notes."
+      />
     </div>
   );
 };

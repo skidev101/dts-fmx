@@ -49,7 +49,7 @@ export async function DELETE(
 
     await prisma.note.delete({
       where: {
-        id: noteId,
+        id: noteId, 
       },
     });
 
