@@ -107,6 +107,8 @@ export default function NewCourseForm() {
             )}
           </Field>
 
+          
+
           {/* Title */}
           <Field>
             <Label htmlFor="title">Title *</Label>

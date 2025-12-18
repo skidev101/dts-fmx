@@ -5,6 +5,8 @@ import {
   HomeIcon,
   NotebookTabs,
   Rocket,
+  Settings,
+  Settings2,
   User,
   type LucideIcon,
 } from "lucide-react";
@@ -30,7 +32,9 @@ const ICONS: Record<string, LucideIcon> = {
   HomeIcon,
   NotebookTabs,
   Rocket,
-  User
+  User,
+  Settings,
+  Settings2
 };
 
 export function SideNav({

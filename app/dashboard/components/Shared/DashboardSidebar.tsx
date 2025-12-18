@@ -11,7 +11,7 @@ import {
 // import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { user } from "@/app/dashboard/layout";
+import { mockUser } from "@/app/dashboard/layout";
 
 export async function DashboardSidebar({
   ...props
@@ -64,11 +64,17 @@ export async function DashboardSidebar({
         iconKey: "Rocket",
         isCollapsible: false,
       },
+      {
+        title: "Account",
+        url: "/dashboard/account",
+        iconKey: "Settings2",
+        isCollapsible: false,
+      },
     ],
     user: {
-      name: user.username || "User",
-      email: user.email,
-      avatar: user.avatarUrl || "",
+      name: mockUser.username || "User",
+      email: mockUser.email,
+      avatar: mockUser.avatarUrl || "",
     },
   };
 

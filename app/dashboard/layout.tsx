@@ -6,16 +6,16 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Role } from "@/types/user";
 import Navbar from "./components/Shared/Navbar";
 
-export const user = {
+export const mockUser = {
   id: "cmi28zbfl0000thyt1cbqqtnl",
   clerkId: "user_35Zu0UUQbWUTnaJNKGjhY2K9hKn",
-  fullname: "",
+  fullname: "dev monaski",
   email: "skidev101@gmail.com",
   username: "skidev101646",
   role: "ADMIN",
   avatarUrl: "",
-  createdAt: "16/11/2025",
-  updatedAt: "22/11/2025",
+  createdAt: "2025-11-16T00:00:00.000Z",
+  updatedAt: "2025-11-22T00:00:00.000Z",
 };
 export default function DashboardLayout({
   children,
@@ -28,7 +28,7 @@ export default function DashboardLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <SidebarProvider>
-        <Navbar user={user} />
+        <Navbar user={mockUser} />
         <DashboardSidebar />
         <SidebarInset>
           <div className="flex flex-col flex-1 pt-16">

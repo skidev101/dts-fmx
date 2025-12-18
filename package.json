@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "ts-node --esm prisma/seed.ts"
+    "seed": "ts-node --esm prisma/seed.ts",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.35.1",
@@ -56,9 +57,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/parser": "^8.50.0",
     "baseline-browser-mapping": "^2.9.7",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
