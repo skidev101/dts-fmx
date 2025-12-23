@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
+import { requireAdmin } from "@/lib/auth";
 
 
 export async function DELETE(
@@ -24,14 +25,16 @@ export async function DELETE(
     // }
     // const userId = session.userId;
 
-    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt";
+    // const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt";
 
-    const foundUser = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
-    });
-    if (!foundUser || foundUser.role !== "ADMIN") {
+    // const foundUser = await prisma.user.findUnique({
+    //   where: {
+    //     clerkId: userId,
+    //   },
+    // });
+
+    const user = await requireAdmin();
+    if (!user || user.role !== "ADMIN") {
       return NextResponse.json({ error: "forbidden" }, { status: 403 });
     }
 

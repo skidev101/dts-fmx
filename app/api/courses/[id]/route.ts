@@ -21,6 +21,7 @@ export async function GET(
       where: { id: courseId },
       include: {
         notes: { include: { uploadedBy: true } },
+        createdBy: { select: { username: true } },
       },
     });
 
@@ -28,7 +29,7 @@ export async function GET(
       return NextResponse.json({ error: "Course not found" }, { status: 404 });
     }
 
-    // console.log("course gotten:", course)
+    console.log("sending course:", course)
 
     return NextResponse.json(course, { status: 200 });
   } catch (error) {

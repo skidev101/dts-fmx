@@ -53,6 +53,7 @@ export async function POST(req: Request) {
         description: data.description,
         code: data.code,
         level: data.level,
+        createdById: foundUser.id,
       },
     });
 
