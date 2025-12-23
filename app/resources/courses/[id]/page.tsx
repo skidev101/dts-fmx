@@ -2,19 +2,19 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChartBarStacked, Info, Loader2, Trash } from "lucide-react";
+import { ChartBarStacked, Info, Loader2, MoreVertical, Trash, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useDeleteCourse } from "@/hooks/course/useDeleteCourse";
 import { useCourse } from "@/hooks/course/useCourse";
 import { useParams, useRouter } from "next/navigation";
 import { DeleteDialog } from "@/components/DeleteDialog";
-import { Note, NoteWithRelations } from "@/types/note";
+import { Note } from "@/types/note";
 import { NoteDialog } from "@/components/notes/NoteDialog";
-import ResourceCard from "@/components/ResourceCard";
 import { Card, CardContent } from "@/components/ui/card";
 import formatDate from "@/utils/formatDate";
 import { Badge } from "@/components/ui/badge";
 import { formatLevel } from "@/utils/formatLevel";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 const CoursePage = () => {
   const params = useParams();
@@ -24,6 +24,7 @@ const CoursePage = () => {
   const [deleteId, setDeleteId] = useState<string>("");
   const id = params.id as string;
   const { data: course, isLoading, isError } = useCourse(id);
+  console.log("course details fetched:", course)
   const { mutate: deleteCourse, isPending } = useDeleteCourse(id);
 
   const isAdmin = true;
@@ -92,13 +93,26 @@ const CoursePage = () => {
 
         {/* ADMIN DELETE */}
         {isAdmin && (
-          <Button
-            variant="destructive"
-            onClick={() => setDeleteId(id)}
-            className="hover:bg-destructive/80! hover:scale-102 active:scale-98 hover:cursor-pointer"
-          >
-            <Trash className="size-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                className="text-destructive"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setDeleteId(id);
+                }}
+              >
+                <Trash2 className="mr-1 size-4 text-destructive" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 
@@ -154,7 +168,7 @@ const CoursePage = () => {
         </div>
 
         <p className="text-foreground/70 mt-4">
-          Course created {formatDate(course.createdAt)} by {course.createdBy}
+          Course created {formatDate(course.createdAt)} by {course.createdBy.username}
         </p>
       </div>
 

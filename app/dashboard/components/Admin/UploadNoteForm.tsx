@@ -122,7 +122,7 @@ const UploadNoteForm = () => {
     const toastId = "note-toast";
     toast.loading("Uploading note...", { id: toastId });
 
-    const upload = await uploadToCloudinary(file);
+    const upload = await uploadToCloudinary(file, "notes");
     console.log("result from file upload:", upload)
     createNote(
       {

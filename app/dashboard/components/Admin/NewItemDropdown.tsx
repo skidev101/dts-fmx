@@ -35,9 +35,9 @@ const NewItemDropdown = () => {
           <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/new/room")}>
             Room
           </DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/new/attendance")}>
+          {/* <DropdownMenuItem className="rounded-lg hover:cursor-pointer" onClick={() => router.push("/dashboard/new/attendance")}>
             Attendance
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
       </DropdownMenuContent>  
     </DropdownMenu>

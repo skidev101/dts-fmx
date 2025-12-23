@@ -45,7 +45,7 @@ const AdminDashboard = () => {
             </h1>
 
             <div className="flex flex-col md:flex-row justify-between w-full h-full gap-3">
-              <Card className="flex flex-col w-full bg-neutral-800 border-neutral-700 rounded-3xl p-6">
+              <Card className="flex flex-col w-full dark:border-neutral-700 rounded-3xl p-6">
                 <div className="flex items-center gap-3">
                   <NotebookTabs className="size-4 text-card-foreground/90" />
                   <p className="text-card-foreground/80">Total courses</p>
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
                   </h1>
                 </div>
               </Card>
-              <Card className="flex flex-col w-full bg-neutral-800 border-neutral-700 rounded-3xl p-6">
+              <Card className="flex flex-col w-full  dark:border-neutral-700 rounded-3xl p-6">
                 <div className="flex items-center gap-3">
                   <FileStack className="size-4 text-card-foreground/90" />
                   <p className="text-card-foreground/80">Total notes</p>
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
           </Card>
           <TopCoursesBarChart data={topCoursesByNotes} />
 
-          <Card className="w-full h-[260px] rounded-3xl bg-card p-6">
+          {/* <Card className="w-full h-[260px] rounded-3xl bg-card p-6">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl text-card-foreground">
                 Trending courses
@@ -96,14 +96,14 @@ const AdminDashboard = () => {
                 </Link>
               </Button>
             </div>
-          </Card>
+          </Card> */}
         </div>
         <div className="flex flex-col gap-4 flex-1">
           {/* <Skeleton className="w-full max-w-sm h-[430px] rounded-3xl bg-card" /> */}
           <StorageArc storage={80} />
 
           <Card className="w-full h-[430px] rounded-3xl bg-card p-6">
-            <h1 className="text-2xl font-semibold">Recent notes</h1>
+            <h1 className="text-2xl font-semibold">Recent activities</h1>
 
             {/* <div className="w-full h-full bg-neutral-800 border border-neutral-700 p-4 rounded-3xl  flex flex-col justify-center items-center mt-2">
               <div className="w-full flex justify-between items-center mt-10 px-8">

@@ -5,12 +5,15 @@ import usernameFromEmail from "@/utils/formatName";
 import { NextResponse } from "next/server";
 
 export async function getCurrentUser() {
-  const clerkUser = await currentUser();
-  if (!clerkUser) return null;
+  // const clerkUser = await currentUser();     temporary change
+  // if (!clerkUser) return null;
+
+  const clerkUserId = "user_36U6eejMHENdCbVJwo3s5s4teFt";
 
   let user = await prisma.user.findUnique({
     where: {
-      clerkId: clerkUser.id,
+      // clerkId: clerkUser.id,
+      clerkId: clerkUserId
     },
     select: {
       id: true,
@@ -25,19 +28,19 @@ export async function getCurrentUser() {
     },
   });
 
-  if (!user) {
-    const username = usernameFromEmail(clerkUser.emailAddresses[0].emailAddress);
-    user = await prisma.user.create({
-      data: {
-        clerkId: clerkUser.id,
-        username,
-        email: clerkUser.emailAddresses[0].emailAddress,
-        avatarUrl: clerkUser.imageUrl,
-        role: "STUDENT",
-      },
-    });
-    console.log("new user created:", user);
-  }
+  // if (!user) {
+  //   const username = usernameFromEmail(clerkUser.emailAddresses[0].emailAddress);
+  //   user = await prisma.user.create({
+  //     data: {
+  //       clerkId: clerkUser.id,
+  //       username,
+  //       email: clerkUser.emailAddresses[0].emailAddress,
+  //       avatarUrl: clerkUser.imageUrl,
+  //       role: "STUDENT",
+  //     }, 
+  //   });
+  //   console.log("new user created:", user);
+  // }
 
   return user;
 }

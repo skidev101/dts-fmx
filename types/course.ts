@@ -10,7 +10,9 @@ export interface Course {
   description?: string | null;
   createdAt: string;
   updatedAt: string;
-  createdBy: string;
+  createdBy: {
+    username: string
+  };
 
   notes: Note[];
 };

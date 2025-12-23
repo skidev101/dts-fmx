@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Role } from "@/types/user";
 import Navbar from "./components/Shared/Navbar";
+import Footer from "./components/Shared/Footer";
 
 export const mockUser = {
   id: "cmi28zbfl0000thyt1cbqqtnl",
@@ -33,6 +34,7 @@ export default function DashboardLayout({
         <SidebarInset>
           <div className="flex flex-col flex-1 pt-16">
             <main className="p-3 sm:p-6 flex-1 overflow-auto">{children}</main>
+        <Footer />
           </div>
         </SidebarInset>
       </SidebarProvider>
