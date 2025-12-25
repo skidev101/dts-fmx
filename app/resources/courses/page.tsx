@@ -34,15 +34,15 @@ const page = () => {
   if (isLoading) {
     return (
       <div className="flex flex-col m-auto max-w-5xl mt-10 px-3">
-        <h1 className="text-3xl font-semibold">All courses</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold">All courses</h1>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 mt-10">
           {[...Array(10)].map((_, i) => (
             <div key={i} className="flex w-full mt-4 py-4 gap-4">
-              <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+              <Skeleton className="w-10 h-10 rounded-lg shrink-0 bg-card border" />
               <div className="flex flex-col gap-2 w-full h-full py-1">
-                <Skeleton className="w-[calc(100%-30px)] h-3 rounded-full" />
-                <Skeleton className="w-[calc(100%-80px)] h-3 rounded-full" />
+                <Skeleton className="w-[calc(100%-30px)] h-3 rounded-full bg-card border" />
+                <Skeleton className="w-[calc(100%-80px)] h-3 rounded-full bg-card border" />
               </div>
             </div>
           ))}
@@ -51,48 +51,52 @@ const page = () => {
     );
   }
 
-  if (!filteredCourses) {
-    return (
-      <div className="w-full flex justify-center items-center">
-        <h1>No results for search</h1>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col m-auto max-w-5xl mt-10 px-2">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline-last">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-semibold ml-1">All courses</h1>
-          <p className="text-foreground/80 mt-2">
-            Click on a course to view notes under it
+    <div className="flex flex-col m-auto max-w-5xl mt-8 sm:mt-10 px-3 pb-4">
+      {/* Header + Search */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold">All courses</h1>
+          <p className="text-sm sm:text-base text-foreground/70 mt-1">
+            Tap a course to view notes
           </p>
         </div>
 
-        <div className=" relative flex max-w-68 flex-1 min-w-0 mt-4 sm:mt-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
-
+        <div className="relative w-full sm:max-w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
+            value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search course, level.."
-            className="pl-10"
+            placeholder="Search courses"
+            className="pl-9 h-10"
           />
         </div>
       </div>
 
-      <Separator className="mt-6" />
+      {/* Desktop-only separator */}
+      <Separator className="hidden sm:block mt-6" />
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 mt-10">
-        {filteredCourses?.map((course: Course) => (
-          <ResourceCard
-            key={course.id}
-            id={course.id}
-            title={course.title}
-            code={course.code}
-            level={course.level}
-          />
-        ))}
-      </div>
+      {/* Results */}
+      {filteredCourses?.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-10">
+          {filteredCourses.map((course: Course) => (
+            <ResourceCard
+              key={course.id}
+              title={course.title}
+              slug={course.slug}
+              code={course.code}
+              level={course.level}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col m-auto max-w-5xl mt-10 px-4 text-center">
+          <p className="text-sm text-foreground/70 mt-3">No courses found</p>
+          <p className="text-xs text-foreground/50 mt-1">
+            Try a different keyword or level
+          </p>
+        </div>
+      )}
     </div>
   );
 };

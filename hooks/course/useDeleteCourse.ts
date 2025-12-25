@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-export const useDeleteCourse = (id: string) => {
+export const useDeleteCourse = () => {
   const q = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (id: string) => {
       try {
         const res = await fetch(`/api/admin/courses/${id}`, {
           method: "DELETE",
@@ -21,7 +21,7 @@ export const useDeleteCourse = (id: string) => {
       }
     },
     onSuccess: () => {
-      q.invalidateQueries({ queryKey: ["courses", id] });
+      q.invalidateQueries({ queryKey: ["courses"] });
     },
   });
 };

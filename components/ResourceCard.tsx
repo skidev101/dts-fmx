@@ -7,17 +7,17 @@ import { ChartBarStacked, FileStack, SquareStack } from "lucide-react";
 import { formatLevel } from "@/utils/formatLevel";
 
 interface ResourceCardProps {
-  id: string;
+  slug: string;
   code?: string;
   title: string;
   level: string;
 }
 
-const ResourceCard = ({ id, code, title, level }: ResourceCardProps) => {
+const ResourceCard = ({ code, title, level, slug }: ResourceCardProps) => {
   const formattedLevel = formatLevel(level);
 
   return (
-    <Link href={`/resources/courses/${id}`}>
+    <Link href={`/resources/courses/${slug}`}>
 
     <Card className="relative w-fu min-w-[280px] flex-row gap-4 p-4 rounded-3xl hover:cursor-pointer hover:bg-card/50 hover:scale-101 active:scale-98 transition-all duration-300">
       <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg:gray-200 dark:bg-neutral-800 border">

@@ -3,13 +3,16 @@
 import { Course } from "@/types/course";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCourse = (id?: string) => {
+export const useCourse = (slug?: string) => {
   console.log("now in get courses hook");
   return useQuery<Course>({
-    queryKey: ["course", id],
+    queryKey: ["course", slug],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/courses/${id}`);
+        const res = await fetch(`/api/courses/${slug}`);
+        if (!res.ok) {
+          throw new Error("An unknown error occured")
+        }
         const data = await res.json();
         return data ?? null;
       } catch (error) {
@@ -17,6 +20,6 @@ export const useCourse = (id?: string) => {
         throw error;
       }
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
 };

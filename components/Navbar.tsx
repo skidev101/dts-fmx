@@ -11,42 +11,44 @@ const Navbar = async () => {
     {
       href: "/",
       text: "Home",
-      icon: <Home />
+      icon: <Home />,
     },
     {
       href: "/resources/courses",
       text: "Resoures",
-      icon: <Rocket />
+      icon: <Rocket />,
     },
     {
       href: "/room",
       text: "Join room",
-      icon: <NotebookTabs />
+      icon: <NotebookTabs />,
     },
   ];
   return (
     <header className="fixed top-0 z-10 backdrop-blur-md flex justify-between items-center w-full px-4 py-6">
       <div className="flex items-center gap-3">
-        
-      <Image
-        src="/logo.png"
-        alt="logo"
-        width={20}
-        height={20}
-        className="dark:invert object-contain"
-      />
-      <span className="font-semibold text-lg">DTS-FMX</span>
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={20}
+          height={20}
+          className="dark:invert object-contain"
+        />
+        <span className="font-semibold text-lg">DTS-FMX</span>
       </div>
 
       <nav className="hidden md:block">
         <ul className="flex gap-6">
           {links.map((link, i) => (
-            <li
+            <Button
               key={i}
-              className="text-sm hover:bg-gray-200 hover:text-gray-800 rounded-full px-3 hover:px-4 py-1 duration-300 transition-all"
+              asChild
+              className="bg-transparent text-black dark:text-white  dark:hover:text-black hover:bg-gray-200 hover:text-gray-800 rounded-full px-3 hover:px-4 py-1 duration-300 transition-all"
             >
-              <Link href={link.href}>{link.text}</Link>
-            </li>
+              <li className="text-sm">
+                <Link href={link.href}>{link.text}</Link>
+              </li>
+            </Button>
           ))}
         </ul>
       </nav>
@@ -62,8 +64,8 @@ const Navbar = async () => {
           </Button>
         )} */}
         <Button variant="outline" asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
+          <Link href="/dashboard">Dashboard</Link>
+        </Button>
       </div>
 
       <MobileNav links={links} /* user={user} */ />
@@ -72,4 +74,3 @@ const Navbar = async () => {
 };
 
 export default Navbar;
-

@@ -15,7 +15,12 @@ export const useUpdateUserProfile = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Update failed");
+      if (!res.ok) {
+        if (res.status === 409) {
+          throw new Error("Username already taken")
+        }
+        throw new Error("Update failed")
+      };
       return res.json();
     },
 

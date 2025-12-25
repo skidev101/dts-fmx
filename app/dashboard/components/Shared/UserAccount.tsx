@@ -143,9 +143,9 @@ export const UserAccount = () => {
         }
         toast.success("Profile updated successfully");
       },
-      onError: () => {
-        toast.error("An error occured.", {
-          description: "Please try again",
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || "Please try again",
         });
       },
     });

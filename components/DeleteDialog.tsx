@@ -10,24 +10,23 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { OctagonAlert, Trash } from "lucide-react";
+import { Loader2, OctagonAlert, Trash } from "lucide-react";
 
 export const DeleteDialog = ({
   id,
   action,
   setDeleteId,
   isLoading,
-  alertText
+  alertText,
 }: {
   id: string;
   action: () => void;
   setDeleteId: (id: string) => void;
   isLoading: boolean;
-  alertText: string
+  alertText: string;
 }) => {
   return (
-    <AlertDialog open={!!id} onOpenChange={() => setDeleteId("")}>
-     
+    <AlertDialog open={!!id || isLoading} onOpenChange={() => setDeleteId("")}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -49,7 +48,11 @@ export const DeleteDialog = ({
             disabled={isLoading}
             className="hover:cursor-pointer"
           >
-            Continue
+            {isLoading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              "Continue"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

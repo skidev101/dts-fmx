@@ -6,6 +6,9 @@ export const useAnalytics = () => {
     queryFn: async () => {
       try {
         const res = await fetch("/api/admin/analytics");
+        if (!res.ok) {
+          throw new Error("An unknown error occured")
+        }
         const data = await res.json();
         return data;
       } catch (error) {

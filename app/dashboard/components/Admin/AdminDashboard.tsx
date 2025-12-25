@@ -119,10 +119,10 @@ const AdminDashboard = () => {
             </div> */}
 
             <div className="flex w-full mt-4 py-4 gap-4">
-              <Skeleton className="w-10 h-10 rounded-xl shrink-0" />
+              <Skeleton className="w-10 h-10 rounded-lg shrink-0 bg-gray-200 dark:bg-neutral-800 border" />
               <div className="flex flex-col gap-2 w-full h-full py-1">
-                <Skeleton className="w-[calc(100%-30px)] h-3 rounded-full" />
-                <Skeleton className="w-[calc(100%-80px)] h-3 rounded-full" />
+                <Skeleton className="w-[calc(100%-30px)] h-3 rounded-full bg-gray-200 dark:bg-neutral-800 border" />
+                <Skeleton className="w-[calc(100%-80px)] h-3 rounded-full bg-gray-200 dark:bg-neutral-800 border" />
               </div>
             </div>
           </Card>

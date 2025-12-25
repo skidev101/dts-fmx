@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChartBarStacked, Info, Loader2, MoreVertical, Trash, Trash2 } from "lucide-react";
+import {
+  ChartBarStacked,
+  Info,
+  Loader2,
+  MoreVertical,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useDeleteCourse } from "@/hooks/course/useDeleteCourse";
 import { useCourse } from "@/hooks/course/useCourse";
@@ -14,23 +21,39 @@ import { Card, CardContent } from "@/components/ui/card";
 import formatDate from "@/utils/formatDate";
 import { Badge } from "@/components/ui/badge";
 import { formatLevel } from "@/utils/formatLevel";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { LoadingOrError } from "@/components/LoadingOrError";
 
 const CoursePage = () => {
   const params = useParams();
   const router = useRouter();
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  console.log("params object:", params);
   const [deleteId, setDeleteId] = useState<string>("");
-  const id = params.id as string;
-  const { data: course, isLoading, isError } = useCourse(id);
-  console.log("course details fetched:", course)
-  const { mutate: deleteCourse, isPending } = useDeleteCourse(id);
+  const slug = params.slug as string;
+  console.log("slug params:", slug);
+  const { data: course, isLoading, isError } = useCourse(slug);
+  console.log("course details fetched:", course);
+  const { mutate: deleteCourse, isPending } = useDeleteCourse();
 
   const isAdmin = true;
+  const isReady = !isLoading && !isError && course;
+
+  if (!isReady) {
+    return (
+      <LoadingOrError isLoading={isLoading} isError={isError || !course} />
+    );
+  }
 
   const handleDelete = async () => {
-    deleteCourse(undefined, {
+    if (!course.id) return;
+    deleteCourse(course.id, {
       onSuccess: (result) => {
         toast.success("Course deleted successfully", {
           description: result.digest,
@@ -45,22 +68,6 @@ const CoursePage = () => {
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="size-18 animate-spin" />
-      </div>
-    );
-  }
-
-  if (isError || !course) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>An error occured</p>
-      </div>
-    );
-  }
-
   const formattedLevel = formatLevel(course.level);
 
   return (
@@ -71,23 +78,20 @@ const CoursePage = () => {
       >
         {formattedLevel.level}
       </Badge>
+
       <div className="flex justify-between items-start">
         <div className="w-full">
-          <h1 className="text-3xl sm:text-4xl capitalize font-bold">
-            {course.title}
-          </h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">{course.title}</h1>
+
           <p className="text-foreground/80 font-semibold uppercase mt-1 text-lg">
             {course.code}
           </p>
-          <h2 className="text-2xl text-foreground/95  mt-10">Description</h2>
 
-          {course.description && (
-            <p className="mt-3 text-foreground/60">
-              {course.description} Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Tempora consequatur quam facere eveniet laborum
-              non dolorem deserunt eius enim, doloribus distinctio nesciunt nemo
-              quo atque veritatis perspiciatis ducimus. Consequuntur, vitae!
-            </p>
+          {course.description?.trim() && (
+            <>
+              <h2 className="text-2xl text-foreground/95 mt-10">Description</h2>
+              <p className="mt-3 text-foreground/60">{course.description}</p>
+            </>
           )}
         </div>
 
@@ -102,10 +106,10 @@ const CoursePage = () => {
 
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                className="text-destructive"
+                className="text-destructive hover:cursor-pointer"
                 onSelect={(e) => {
                   e.preventDefault();
-                  setDeleteId(id);
+                  setDeleteId(course.id);
                 }}
               >
                 <Trash2 className="mr-1 size-4 text-destructive" />
@@ -117,6 +121,7 @@ const CoursePage = () => {
       </div>
 
       <h2 className="text-2xl text-foreground/95 mt-10">Notes</h2>
+      {/* <h1 className="text-2xl sm:text-3xl font-semibold">Notes</h1> */}
 
       <NoteDialog
         open={dialogOpen}
@@ -124,7 +129,7 @@ const CoursePage = () => {
         onOpenChange={setDialogOpen}
       />
 
-      {course?.notes?.length === 0 ? (
+      {!course?.notes?.length ? (
         <div className="text-center mt-8">
           <p className="text-card-foreground/80">
             No notes for this course yet...
@@ -132,47 +137,50 @@ const CoursePage = () => {
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4 mt-6">
-          {course?.notes?.map((note: Note) => (
+          {course.notes.map((note: Note) => (
             <Card
               key={note.id}
-              onClick={() => {
-                setDialogOpen(true);
-                setSelectedNote(note);
-              }}
-              className="relative p-4 rounded-3xl hover:cursor-pointer hover:bg-card/50 hover:scale-101 active:scale-99 transition-all duration-200"
+              className="rounded-3xl transition-all duration-200 hover:bg-card/50 hover:scale-[1.01] active:scale-[0.99]"
             >
-              <CardContent className="flex px-0">
-                <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-neutral-800 border">
-                  {/* <Image width={28} height={28} src="/file.svg" alt="file" /> */}
-                  <ChartBarStacked className="size-8 text-neutral-400" />
-                </div>
-                <div className="flex justify-center flex-col ml-3">
-                  <h3 className="font-medium capitalize text-lg">
-                    {note.title}
-                  </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setDialogOpen(true);
+                  setSelectedNote(note);
+                }}
+                className="w-full text-left p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-3xl"
+              >
+                <CardContent className="flex px-0">
+                  <div className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-neutral-800 border">
+                    <ChartBarStacked className="size-8 text-neutral-400" />
+                  </div>
 
-                  <p className="text-card-foreground/80 text-xs">
-                    {formatDate(note.createdAt)}
-                  </p>
-                </div>
-              </CardContent>
+                  <div className="flex flex-col justify-center ml-3">
+                    <h3 className="font-medium text-lg">{note.title}</h3>
+
+                    <p className="text-card-foreground/80 text-xs">
+                      {formatDate(note.createdAt)}
+                    </p>
+                  </div>
+                </CardContent>
+              </button>
             </Card>
           ))}
         </div>
       )}
 
-      <div className=" mt-10">
+      <div className="mt-10">
         <div className="flex gap-2 items-center">
           <Info className="size-6 text-foreground/80" />
           <h2 className="text-xl text-foreground/90">Info</h2>
         </div>
 
         <p className="text-foreground/70 mt-4">
-          Course created {formatDate(course.createdAt)} by {course.createdBy.username}
+          Course created {formatDate(course.createdAt)} by{" "}
+          {course.createdBy.username}
         </p>
       </div>
 
-      {/* Delete Dialog */}
       <DeleteDialog
         id={deleteId || ""}
         action={handleDelete}

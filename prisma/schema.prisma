@@ -31,6 +31,7 @@ enum Role {
 model Course {
   id          String   @id @default(cuid())
   title       String
+  slug        String   @unique
   code        String   @unique
   level       Level
   description String?

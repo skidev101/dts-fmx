@@ -27,18 +27,20 @@ import { Field } from "@/components/ui/field";
 import { useCreateCourse } from "@/hooks/course/useCreateCourse";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 const newCourseSchema = z.object({
-  title: z.string().min(3),
-  description: z.string().min(6),
-  code: z.string().min(3),
-  level: z.enum(["L100", "L200", "L300", "L400", "L500"]),
+  title: z.string().min(3, "Title is too short").max(30, "Title cannot exceed 30 characters"),
+  description: z.string().max(40, "Description is too long").optional(),
+  code: z.string().min(3, "Code is too short").max(7, "Code must not be more than 7 characters"),
+  level: z.enum(["L100", "L200", "L300", "L400", "L500"], "Invalid level"),
 });
 
 type NewCourseFormValues = z.infer<typeof newCourseSchema>;
 
 export default function NewCourseForm() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { mutate: createCourse, isPending } = useCreateCourse();
 
   const {
@@ -59,11 +61,11 @@ export default function NewCourseForm() {
   const toastId = "course-toast";
 
   const onSubmit = async (values: NewCourseFormValues) => {
-    toast.info("Sending data");
+    setIsLoading(true);
     createCourse(
       {
         title: values.title,
-        description: values.description,
+        description: values.description || "",
         code: values.code,
         level: values.level,
       },
@@ -74,6 +76,7 @@ export default function NewCourseForm() {
             id: toastId,
             description: result.digest,
           });
+          setIsLoading(false)
           router.push("/resources/courses")
         },
         onError: (error) => {
@@ -81,6 +84,7 @@ export default function NewCourseForm() {
           toast.error("Failed to create course", {
             description: error.message || "Please try again",
           });
+          setIsLoading(false)
         },
       }
     );
@@ -120,13 +124,13 @@ export default function NewCourseForm() {
 
           {/* Description */}
           <Field>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Description <span className="text-xs text-neutral-600 dark:text-neutral-400">optional</span></Label>
             <Textarea id="description" {...register("description")} rows={6} className="resize-none max-h-8" />
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}
               </p>
-            )}
+            )} 
           </Field>
 
           {/* Level Dropdown using Controller + Field */}
@@ -157,10 +161,10 @@ export default function NewCourseForm() {
 
           <DialogFooter className="flex justify-end gap-2 mt-2">
             <DialogClose asChild>
-              <Button variant="outline" className="hover:cursor-pointer">Cancel</Button>
+              <Button variant="outline" className="hover:cursor-pointer" disabled={isPending}>Cancel</Button>
             </DialogClose>
             <Button type="submit" className="hover:cursor-pointer" disabled={isPending}>
-              Create
+              {isPending ? "Creating" : "Create"}
             </Button>
           </DialogFooter>
         </form>
