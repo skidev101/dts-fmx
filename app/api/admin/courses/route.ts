@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-
+import slugify from "slugify";
 
 const courseSchema = z.object({
-  title: z.string().min(3),
-  description: z.string().min(6),
-  code: z.string().min(3),
+  title: z.string().min(3).max(30),
+  description: z.string().max(40).optional(),
+  code: z.string().min(3).max(7),
   level: z.enum(["L100", "L200", "L300", "L400", "L500"]),
 });
 
@@ -47,9 +47,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const slug = slugify(data.code, { lower: true, strict: true });
+
     const course = await prisma.course.create({
       data: {
         title: data.title,
+        slug,
         description: data.description,
         code: data.code,
         level: data.level,

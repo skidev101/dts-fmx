@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const course = await prisma.course.findMany({
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
+        slug: true,
         code: true,
         level: true,
         description: true,
