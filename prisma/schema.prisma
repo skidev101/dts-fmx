@@ -21,6 +21,7 @@ model User {
   notesDownloaded NoteDownloadLog[] @relation("UserDownloads")
   uploadedNotes   Note[]            @relation("UserUploadedNotes")
   coursesCreated  Course[]          @relation("UserCreatedCourses")
+  activities      Activity[]        @relation("UserActivities")
 }
 
 enum Role {
@@ -79,4 +80,23 @@ model NoteDownloadLog {
   user      User     @relation("UserDownloads", fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  type      ActivityType
+  entityId  String
+  entity    String
+  user      User         @relation("UserActivities", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime     @default(now())
+
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  COURSE_CREATED
+  NOTE_CREATED
+  COURSE_DELETED
+  NOTE_DELETED
 }
