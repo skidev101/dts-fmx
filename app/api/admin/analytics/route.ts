@@ -10,7 +10,7 @@ export async function GET() {
         prisma.user.count(),
 
         prisma.course.findMany({
-          take: 10,
+          take: 5,
           orderBy: {
             notes: { _count: "desc" },
           },

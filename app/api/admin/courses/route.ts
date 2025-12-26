@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import slugify from "slugify";
+import { requireAdmin } from "@/lib/auth";
 
 const courseSchema = z.object({
   title: z.string().min(3).max(30),
@@ -12,21 +13,7 @@ const courseSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    // const session = await auth();
-    // if (!session.userId) {
-    //   return NextResponse.json({ error: "unauthorized" }, { status: 403 });
-    // }
-    // const userId = session.userId;
-    const userId = "user_36U6eejMHENdCbVJwo3s5s4teFt"; // new id
-
-    const foundUser = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
-    });
-    if (!foundUser || foundUser.role !== "ADMIN") {
-      return NextResponse.json({ error: "forbidden" }, { status: 403 });
-    }
+    const user = await requireAdmin();
 
     const body = await req.json();
 
@@ -56,9 +43,20 @@ export async function POST(req: Request) {
         description: data.description,
         code: data.code,
         level: data.level,
-        createdById: foundUser.id,
+        createdById: user.id,
       },
     });
+
+    const activityLog = await prisma.activity.create({
+      data: {
+        type: "COURSE_CREATED",
+        entity: "course",
+        entityId: course.id,
+        userId: user.id,
+      }
+    });
+
+    console.log("create course activity logged", activityLog);
 
     return NextResponse.json(
       { message: "new course created", course },
